@@ -988,52 +988,322 @@ function mergeStats(idxs){
 }
 
 // ── NBA COMPS ─────────────────────────────────────────────────────────────────
+// Each comp has:
+//   name, desc (shown on card), tier ('primary' or 'rising'),
+//   posFilter (null=any, 'G'=goalie only, '!G'=non-goalie only),
+//   gates (array of boolean fns; primary comps must pass >=2 of 3 to qualify),
+//   score (fn returning raw fit score — higher is better)
 const COMPS=[
-  {name:'Nikola Jokic',    desc:'Elite scorer who elevates everyone with pinpoint passing and vision.',         score:s=>{const sp=pct(s.goals,s.sog+s.soff)??0,pp=pct(s.passCmp,s.passAtt)??0;return(s.goals>=2?sp:0)+(pp>=85&&s.passAtt>8?pp*.5:0)+s.assists*8;},min:80},
-  {name:'LeBron James',    desc:'Primary playmaker who controls the offense and rarely turns it over.',        score:s=>{const pp=pct(s.passCmp,s.passAtt)??0,to=s.toUnf+s.toFrc;return(s.assists>=2?s.assists*15:0)+(pp>=80&&s.passAtt>10?pp*.4:0)-to*5;},min:40},
-  {name:'Jayson Tatum',    desc:'Creates her own shot off the dribble and finishes at a high rate.',           score:s=>{const dA=s.dlAtt+s.drAtt,dS=s.dlSuc+s.drSuc,dp=pct(dS,dA)??0,sp=pct(s.goals,s.sog+s.soff)??0;return(s.goals>=2?sp*.6:0)+(dA>=2&&dp>=70?dp*.5:0);},min:60},
-  {name:'Kyrie Irving',    desc:'Impossible to guard off the dribble — creates for herself and teammates.',    score:s=>{const dA=s.dlAtt+s.drAtt,dS=s.dlSuc+s.drSuc,dp=pct(dS,dA)??0;return(dA>=3&&dp>=70?dp*.8:0)+s.assists*6+s.gso*5;},min:60},
-  {name:'Steph Curry',     desc:'Impossible to stay in front of — creates space off the dribble at will.',    score:s=>{const dA=s.dlAtt+s.drAtt,dS=s.dlSuc+s.drSuc,dp=pct(dS,dA)??0;return dA>=2?dp:0;},min:50},
-  {name:'Chris Paul',      desc:'Elite court vision and clean ball control — keeps the offense flowing.',      score:s=>{const pp=pct(s.passCmp,s.passAtt)??0,to=s.toUnf+s.toFrc;return(pp>=85&&s.passAtt>8?pp:0)-to*8+s.fd*4;},min:60},
-  {name:'Draymond Green',  desc:'Controls the possession battle — draw controls and hustle shape every game.', score:s=>{const dcT=s.dcWon+s.dcLost,dp=pct(s.dcWon,dcT)??0;return(s.dcWon>=8?s.dcWon*5:0)+(dp>=60&&dcT>=5?dp*.4:0)+s.gbWon*3+s.ct*6;},min:40},
-  {name:'Marcus Smart',    desc:'Wins every loose ball and guards the toughest assignment on the field.',      score:s=>s.ct*10+s.ints*8+s.gbWon*4+s.dodgeBlk*6,min:25},
-  {name:'Jimmy Butler',    desc:'Aggressive scorer who earns tough shots and gets to the line.',               score:s=>{const sp=pct(s.goals,s.sog+s.soff)??0;return(s.goals>=1?sp*.7:0)+s.fd*5+s.fpa*4;},min:40},
-  {name:'Dennis Rodman',   desc:'The hustle plays change the game — wins every 50/50 ball nobody else wants.', score:s=>s.gbWon*8+s.dcWon*4,min:20},
-  {name:'Rudy Gobert',     desc:'Anchors the defense in goal — makes key stops when it matters most.',         score:s=>{const sv=pct(s.saves,s.saves+s.goalsAllowed)??0;return s._pos==='G'?(s.saves*8+sv*.5):0;},min:10},
-  {name:'Ben Simmons',     desc:'Elite distributor and defender who avoids putting pressure on the goal.',     score:s=>{const pp=pct(s.passCmp,s.passAtt)??0;return(pp>=80&&s.passAtt>5?pp*.3:0)+s.ct*5-s.goals*20;},min:15},
+  // ═══ SCORING (primary) ═══
+  {name:'Steph Curry',tier:'primary',posFilter:'!G',
+    desc:'The gravity. Defenders collapse whether she shoots or not. Feed her the ball and get out of the way.',
+    gates:[s=>pct(s.goals,s.sog+s.soff)>=50,s=>(s.sog+s.soff)>=3,s=>s.goals>=2],
+    score:s=>{const sp=pct(s.goals,s.sog+s.soff)||0;return sp*1.5+s.goals*8+(s.sog+s.soff)*2;}},
+
+  {name:'Kevin Durant',tier:'primary',posFilter:'!G',
+    desc:'Unguardable when she\'s on. Smooth release, no wasted motion — every shot looks automatic.',
+    gates:[s=>pct(s.goals,s.sog+s.soff)>=45,s=>s.goals>=2,s=>(s.sog+s.soff)>=4],
+    score:s=>{const sp=pct(s.goals,s.sog+s.soff)||0;return sp+s.goals*6;}},
+
+  {name:'Caitlin Clark',tier:'primary',posFilter:'!G',
+    desc:'Shoots from anywhere, passes through traffic, changes how the defense plays. The whole offense runs through her.',
+    gates:[s=>pct(s.goals,s.sog+s.soff)>=45,s=>s.assists>=2,s=>s.passCmp>=15],
+    score:s=>{const sp=pct(s.goals,s.sog+s.soff)||0;return sp*.8+s.assists*7+s.goals*4;}},
+
+  {name:'Jayson Tatum',tier:'primary',posFilter:'!G',
+    desc:'The iso scorer. Give her the ball, clear a side, let her cook.',
+    gates:[s=>s.goals>=2,s=>pct(s.dlSuc+s.drSuc,s.dlAtt+s.drAtt)>=55,s=>(s.dlAtt+s.drAtt)>=4],
+    score:s=>{const dp=pct(s.dlSuc+s.drSuc,s.dlAtt+s.drAtt)||0;return s.goals*8+dp*.5;}},
+
+  {name:'Paige Bueckers',tier:'primary',posFilter:'!G',
+    desc:'Efficiency incarnate. Doesn\'t force anything, makes the right play every possession. Poetry in motion.',
+    gates:[s=>pct(s.goals,s.sog+s.soff)>=50,s=>{const to=s.toUnf+s.toFrc;return to===0?true:(s.assists/to)>=1.5;},s=>(s.sog+s.soff)>=3],
+    score:s=>{const sp=pct(s.goals,s.sog+s.soff)||0,to=s.toUnf+s.toFrc;const at=to>0?(s.assists/to):s.assists;return sp+at*8-to*5;}},
+
+  {name:'A\'ja Wilson',tier:'primary',posFilter:'!G',
+    desc:'Two-way dominance. Scores, defends, rebounds — the kind of player who makes everyone around her better.',
+    gates:[s=>s.goals>=2,s=>s.gbWon>=3,s=>pct(s.dlSuc+s.drSuc,s.dlAtt+s.drAtt)>=50],
+    score:s=>{const dp=pct(s.dlSuc+s.drSuc,s.dlAtt+s.drAtt)||0;return s.goals*6+s.gbWon*4+dp*.3+s.ct*3;}},
+
+  // ═══ PLAYMAKING (primary) ═══
+  {name:'Nikola Jokic',tier:'primary',posFilter:'!G',
+    desc:'The quarterback. She doesn\'t need to score to control the game — she sees the play two moves ahead.',
+    gates:[s=>s.assists>=2,s=>pct(s.passCmp,s.passAtt)>=85,s=>s.passAtt>=12],
+    score:s=>{const pp=pct(s.passCmp,s.passAtt)||0;return s.assists*12+pp*.6+s.passCmp*.8;}},
+
+  {name:'Chris Paul',tier:'primary',posFilter:'!G',
+    desc:'The point guard. Doesn\'t turn it over, makes the simple play, runs the show. Offense lives through her hands.',
+    gates:[s=>pct(s.passCmp,s.passAtt)>=90,s=>{const to=s.toUnf+s.toFrc;return to===0?s.assists>0:(s.assists/to)>=2.0;},s=>s.passAtt>=10],
+    score:s=>{const pp=pct(s.passCmp,s.passAtt)||0,to=s.toUnf+s.toFrc;return pp+s.assists*6-to*10+s.fd*3;}},
+
+  {name:'Sabrina Ionescu',tier:'primary',posFilter:'!G',
+    desc:'Triple-threat. Scoring one game, setting everyone up the next. You can\'t game-plan for both.',
+    gates:[s=>s.goals>=2,s=>s.assists>=2,s=>pct(s.goals,s.sog+s.soff)>=40],
+    score:s=>{const sp=pct(s.goals,s.sog+s.soff)||0;return s.goals*5+s.assists*5+sp*.4;}},
+
+  {name:'Draymond Green',tier:'primary',posFilter:'!G',
+    desc:'The brain of the team. Makes the right pass, makes the right rotation, makes the right read. Loud energy, smart decisions.',
+    gates:[s=>s.passCmp>=12,s=>s.ct>=2,s=>s.gbWon>=3],
+    score:s=>s.passCmp*.8+s.ct*6+s.gbWon*4+s.dodgeBlk*4+s.dcWon*2},
+
+  {name:'Ben Simmons',tier:'primary',posFilter:'!G',
+    desc:'The distributor. Elite ball movement, trusted hands, feeds the scorers — doesn\'t need to shoot to run the show. The kind of player who makes the defense solve a new puzzle.',
+    gates:[s=>pct(s.passCmp,s.passAtt)>=85,s=>s.passAtt>=8,s=>s.goals<=1&&(s.sog+s.soff)<=2],
+    score:s=>{const pp=pct(s.passCmp,s.passAtt)||0;return pp*.6+s.passCmp+s.ct*4+s.gbWon*3-s.goals*12-((s.sog+s.soff)*3);}},
+
+  // ═══ DODGING (primary) ═══
+  {name:'Ja Morant',tier:'primary',posFilter:'!G',
+    desc:'Explosive. First step is gone before the defender blinks. Gets to the cage on demand.',
+    gates:[s=>pct(s.dlSuc+s.drSuc,s.dlAtt+s.drAtt)>=60,s=>(s.dlAtt+s.drAtt)>=5,s=>s.goals>=1],
+    score:s=>{const dp=pct(s.dlSuc+s.drSuc,s.dlAtt+s.drAtt)||0,dA=s.dlAtt+s.drAtt;return dp*.8+dA*3+s.goals*5;}},
+
+  {name:'Luka Dončić',tier:'primary',posFilter:'!G',
+    desc:'Crafty, patient, methodical. She\'s going to one hand — defenders know it and still can\'t stop it.',
+    gates:[s=>pct(s.dlSuc+s.drSuc,s.dlAtt+s.drAtt)>=55,s=>{const dA=s.dlAtt+s.drAtt;return dA>0&&(Math.max(s.dlAtt,s.drAtt)/dA)>=0.7;},s=>s.fd>=1],
+    score:s=>{const dp=pct(s.dlSuc+s.drSuc,s.dlAtt+s.drAtt)||0;return dp+s.fd*3+(s.dlAtt+s.drAtt)*2;}},
+
+  {name:'Angel Reese',tier:'primary',posFilter:'!G',
+    desc:'Physical. Draws contact, finishes through it, and dares refs not to call it. Nobody wants the matchup.',
+    gates:[s=>s.fd>=2,s=>(s.dlAtt+s.drAtt)>=4,s=>s.gbWon>=3],
+    score:s=>s.fd*8+(s.dlAtt+s.drAtt)*2+s.gbWon*3+s.fpa*3},
+
+  {name:'Kyrie Irving',tier:'primary',posFilter:'!G',
+    desc:'Handles for days. Goes either way, shakes defenders, finishes at absurd angles. Pure skill.',
+    gates:[s=>pct(s.dlSuc+s.drSuc,s.dlAtt+s.drAtt)>=65,s=>{const dA=s.dlAtt+s.drAtt;if(dA<3)return false;const ratio=Math.min(s.dlAtt,s.drAtt)/dA;return ratio>=0.40&&ratio<=0.60;},s=>(s.dlAtt+s.drAtt)>=4],
+    score:s=>{const dp=pct(s.dlSuc+s.drSuc,s.dlAtt+s.drAtt)||0;return dp*.9+(s.dlAtt+s.drAtt)*2+s.assists*4+s.goals*3;}},
+
+  // ═══ HUSTLE / DEFENSE (primary) ═══
+  {name:'Dennis Rodman',tier:'primary',posFilter:'!G',
+    desc:'Pure hustle. Every loose ball, every 50/50. She doesn\'t need the box score to change the game.',
+    gates:[s=>s.gbWon>=5,s=>s.ct>=2,s=>s.goals<=1],
+    score:s=>s.gbWon*9+s.ct*6+s.dcWon*3-s.goals*8},
+
+  {name:'Herb Jones',tier:'primary',posFilter:'!G',
+    desc:'The lockdown. Whoever she guards disappears. Takes the best matchup every game without saying a word.',
+    gates:[s=>pct(s.dodgeBlk,s.dodgeOn)>=60,s=>s.ct>=2,s=>s.dodgeOn>=3],
+    score:s=>{const dwr=pct(s.dodgeBlk,s.dodgeOn)||0;return dwr*.8+s.dodgeBlk*5+s.ct*5+s.ints*3;}},
+
+  {name:'Alex Caruso',tier:'primary',posFilter:'!G',
+    desc:'Glue. Doesn\'t show up on the stat sheet the way scorers do — but take her out and everything falls apart.',
+    gates:[s=>pct(s.dodgeBlk,s.dodgeOn)>=55,s=>s.gbWon>=3,s=>(s.toUnf+s.toFrc)<=1],
+    score:s=>{const dwr=pct(s.dodgeBlk,s.dodgeOn)||0,to=s.toUnf+s.toFrc;return dwr*.6+s.gbWon*3+s.ct*4-to*6;}},
+
+  {name:'Breanna Stewart',tier:'primary',posFilter:'!G',
+    desc:'The superstar who also plays defense. Complete player. Coaches dream about this archetype.',
+    gates:[s=>s.goals>=2,s=>pct(s.dodgeBlk,s.dodgeOn)>=50&&s.dodgeOn>=2,s=>s.gbWon>=3],
+    score:s=>{const dwr=pct(s.dodgeBlk,s.dodgeOn)||0;return s.goals*5+dwr*.4+s.gbWon*3+s.ct*3+s.assists*3;}},
+
+  {name:'Marcus Smart',tier:'primary',posFilter:'!G',
+    desc:'Heart and fire. Takes every challenge personally. Plays with an edge every single possession.',
+    gates:[s=>pct(s.dodgeBlk,s.dodgeOn)>=55&&s.dodgeOn>=2,s=>s.ct>=2,s=>s.fouls>=1],
+    score:s=>s.ct*8+s.ints*5+s.gbWon*3+s.dodgeBlk*5+s.fouls*2},
+
+  // ═══ DRAW SPECIALIST (primary) ═══
+  {name:'Napheesa Collier',tier:'primary',posFilter:'!G',
+    desc:'Circle specialist. When we need possession, she delivers. Every draw is a weapon.',
+    gates:[s=>pct(s.dcWon,s.dcWon+s.dcLost)>=65,s=>(s.dcWon+s.dcLost)>=4,s=>s.dcWon>=3],
+    score:s=>{const dcp=pct(s.dcWon,s.dcWon+s.dcLost)||0;return s.dcWon*8+dcp*.7;}},
+
+  // ═══ GOALIE (primary — G only) ═══
+  {name:'Rudy Gobert',tier:'primary',posFilter:'G',
+    desc:'The wall. Low shots go nowhere. Shooters see her in net and aim high — and miss.',
+    gates:[s=>pct(s.saves,s.saves+s.goalsAllowed)>=60,s=>s.saves>=4,s=>s.saves>s.goalsAllowed],
+    score:s=>{const sv=pct(s.saves,s.saves+s.goalsAllowed)||0;return s.saves*9+sv*.6;}},
+
+  {name:'Giannis',tier:'primary',posFilter:'G',
+    desc:'Presence. Takes up the whole cage. Athletic enough to get anywhere — shooters don\'t see a gap.',
+    gates:[s=>pct(s.saves,s.saves+s.goalsAllowed)>=55,s=>s.saves>=5,s=>pct(s.clrSuc,s.clrAtt)>=70||s.clrAtt<=2],
+    score:s=>{const sv=pct(s.saves,s.saves+s.goalsAllowed)||0;return s.saves*7+sv*.5+s.clrSuc*2;}},
+
+  // ═══ RISING STARS (tier='rising' — only considered for low-volume players) ═══
+  {name:'Bronny James',tier:'rising',posFilter:null,
+    desc:'Waiting for her moment. The talent is there — the minutes are coming.',
+    gates:[],
+    score:s=>(s.goals||s.assists||s.gbWon||s.saves)?5:2},
+
+  {name:'Reed Sheppard',tier:'rising',posFilter:'!G',
+    desc:'Quiet production, loud potential. One hot stretch and the whole coaching staff is calling her name.',
+    gates:[],
+    score:s=>{const sp=pct(s.goals,s.sog+s.soff)||0;return(s.sog+s.soff)>0?sp*.5+3:1;}},
+
+  {name:'Cooper Flagg',tier:'rising',posFilter:'!G',
+    desc:'The future. Generational ceiling — still unlocking what she can do.',
+    gates:[],
+    score:s=>s.goals*2+s.gbWon+s.ct*2+s.assists*2+(s.dlSuc+s.drSuc)},
+
+  {name:'Ausar Thompson',tier:'rising',posFilter:'!G',
+    desc:'Defense first, offense arriving. The complete player is still being built — and the foundation is elite.',
+    gates:[],
+    score:s=>s.ct*4+s.gbWon*3+s.dodgeBlk*3+s.ints*2-s.goals},
+
+  {name:'JuJu Watkins',tier:'rising',posFilter:'!G',
+    desc:'Franchise player in the making. Every rep is a preview — watch closely.',
+    gates:[],
+    score:s=>s.goals*3+s.assists*3+(s.dlAtt+s.drAtt)+s.fpa*2},
+
+  {name:'Cameron Brink',tier:'rising',posFilter:null,
+    desc:'Length, instincts, unlimited runway. The kind of player coaches build systems around.',
+    gates:[],
+    score:s=>s.gbWon*3+s.ct*3+s.dodgeBlk*3+s.saves*2+s.ints*2},
 ];
 
+// Count total stat events to decide primary vs rising path
+function totalStatEvents(s){
+  return (s.goals||0)+(s.assists||0)+(s.sog||0)+(s.soff||0)+(s.gbWon||0)+(s.ct||0)+(s.ints||0)+(s.dlAtt||0)+(s.drAtt||0)+(s.dcWon||0)+(s.dcLost||0)+(s.dodgeBlk||0)+(s.dodgeOn||0)+(s.saves||0)+(s.goalsAllowed||0)+(s.assists||0)+(s.fpa||0)+(s.gso||0);
+}
+
+// Check if a gate array passes the threshold (>=2 of 3 for primary)
+function gatesPass(gates,s){
+  if(!gates||gates.length===0)return true;
+  let passed=0;
+  gates.forEach(g=>{try{if(g(s))passed++;}catch(e){}});
+  return passed>=2;
+}
+
+// Check if posFilter matches the player position
+function posMatches(comp,pos){
+  if(!comp.posFilter)return true;
+  if(comp.posFilter==='G')return pos==='G';
+  if(comp.posFilter==='!G')return pos!=='G';
+  return true;
+}
+
 function assignComps(all){
-  ROSTER.forEach(p=>{if(all[p.jersey])all[p.jersey]._pos=p.position;});
+  // Attach position to stats for convenience
+  ROSTER.forEach(p=>{if(all[p.jersey])all[p.jersey]._pos=posN(p.position);});
+
+  // Determine games played (how many games in current view)
+  const gamesPlayed=Math.max(1,curIdxs.length);
+  const RISING_THRESHOLD=10; // events per game played
+
   const cands=[];
   ROSTER.forEach(p=>{
     const s=all[p.jersey];
-    if(!(s.goals||s.assists||s.passAtt||s.dlAtt+s.drAtt||s.dcWon||s.gbWon||s.saves))return;
-    COMPS.forEach((c,ci)=>{const sc=c.score(s);if(sc>=c.min)cands.push({j:p.jersey,ci,sc});});
+    if(!s)return;
+    const pos=posN(p.position);
+    const totalEvents=totalStatEvents(s);
+    const perGame=totalEvents/gamesPlayed;
+    const useRising=perGame<RISING_THRESHOLD;
+
+    COMPS.forEach((c,ci)=>{
+      // Route by tier: rising-volume players only match rising comps, normal players only match primary
+      if(useRising&&c.tier!=='rising')return;
+      if(!useRising&&c.tier!=='primary')return;
+
+      // Position filter
+      if(!posMatches(c,pos))return;
+
+      // Primary comps must pass the 2-of-3 gate threshold; rising comps have no gates
+      if(c.tier==='primary'&&!gatesPass(c.gates,s))return;
+
+      const sc=c.score(s);
+      if(sc>0)cands.push({j:p.jersey,ci,sc});
+    });
   });
+
+  // Highest-score-first, unique comp, unique player
   cands.sort((a,b)=>b.sc-a.sc);
   const usedC=new Set(),usedP=new Set(),res={};
-  cands.forEach(c=>{if(usedP.has(c.j)||usedC.has(c.ci))return;res[c.j]=COMPS[c.ci].name;usedC.add(c.ci);usedP.add(c.j);});
+  cands.forEach(c=>{
+    if(usedP.has(c.j)||usedC.has(c.ci))return;
+    res[c.j]=COMPS[c.ci].name;
+    usedC.add(c.ci);
+    usedP.add(c.j);
+  });
   return res;
 }
 
 function getBlurb(player,s){
-  const pos=posN(player.position),dA=s.dlAtt+s.drAtt,dS=s.dlSuc+s.drSuc,to=s.toUnf+s.toFrc;
-  const hasData=s.goals||s.assists||s.passAtt||dA||s.dcWon||s.gbWon||s.saves;
+  const pos=posN(player.position);
+  const dA=s.dlAtt+s.drAtt,dS=s.dlSuc+s.drSuc;
+  const to=s.toUnf+s.toFrc;
+  const hasData=s.goals||s.assists||s.passAtt||dA||s.dcWon||s.gbWon||s.saves||s.dodgeOn||s.ct;
   if(!hasData)return{blurb:null,nba:null};
+
+  // Look up assigned comp
   const comp=COMPS.find(c=>c.name===nbaMap[player.jersey]);
   const nba=comp?`${comp.name} — ${comp.desc}`:null;
-  if(pos==='G'){const sv=pct(s.saves,s.saves+s.goalsAllowed);if(!s.saves&&!s.goalsAllowed)return{blurb:null,nba:null};return{blurb:`Made ${s.saves} save${s.saves!==1?'s':''} on ${s.gsoAllowed} scoring opportunities, allowing ${s.goalsAllowed} goals${sv!==null?' ('+sv+'% save rate)':''}.`,nba};}
-  const lines=[],pp=pct(s.passCmp,s.passAtt),sp=pct(s.goals,s.sog+s.soff),dp=pct(dS,dA),dcp=pct(s.dcWon,s.dcWon+s.dcLost),rat=to>0?(s.assists/to).toFixed(1):null;
-  if(s.goals>0||s.assists>0)lines.push(`Scored ${s.goals}G + ${s.assists}A`+(s.sog+s.soff>0?` on ${sp}% shooting`:'')+'.');
-  if(pp!==null&&s.passAtt>3)lines.push(`${pp}% pass completion (${s.passCmp}/${s.passAtt}).`);
-  if(dA>0)lines.push(`${dp}% DSR (${dS}/${dA}${dA>2&&s.dlAtt!==s.drAtt?', favors '+(s.dlAtt>s.drAtt?'left':'right'):''})`+'.');
-  if(s.dcWon+s.dcLost>0)lines.push(`Won ${s.dcWon}/${s.dcWon+s.dcLost} draw controls (${dcp}%).`);
-  if(s.gbWon>2)lines.push(`${s.gbWon} ground balls won.`);
-  if(s.ct>1)lines.push(`${s.ct} caused turnovers.`);
-  if(rat&&to>1)lines.push(`Ast/TO ratio: ${rat}.`);
-  if(s.dodgeOn>0){const dwr=pct(s.dodgeBlk,s.dodgeOn);lines.push(`${dwr}% DWR (${s.dodgeBlk}/${s.dodgeOn} dodges blocked).`);}
+
+  // GOALIE blurb path
+  if(pos==='G'){
+    if(!s.saves&&!s.goalsAllowed)return{blurb:null,nba:null};
+    const sv=pct(s.saves,s.saves+s.goalsAllowed);
+    const svStr=sv!==null?` (${sv}% save rate)`:'';
+    const gsoNote=s.gsoAllowed>0?` on ${s.gsoAllowed} scoring opportunities`:'';
+    let line=`Made ${s.saves} save${s.saves!==1?'s':''}${gsoNote}, allowing ${s.goalsAllowed} goal${s.goalsAllowed!==1?'s':''}${svStr}.`;
+    // Add clear info if meaningful
+    if(s.clrAtt>=2){
+      const clrP=pct(s.clrSuc,s.clrAtt);
+      line+=` ${clrP}% clear rate (${s.clrSuc}/${s.clrAtt}).`;
+    }
+    return{blurb:line,nba};
+  }
+
+  // FIELD PLAYER blurb — build prioritized line list
+  const lines=[];
+  const pp=pct(s.passCmp,s.passAtt);
+  const sp=pct(s.goals,s.sog+s.soff);
+  const dp=pct(dS,dA);
+  const dcp=pct(s.dcWon,s.dcWon+s.dcLost);
+  const dwr=s.dodgeOn>0?pct(s.dodgeBlk,s.dodgeOn):null;
+  const rat=to>0?(s.assists/to).toFixed(1):(s.assists>0?s.assists+':0':null);
+
+  // Priority 1: scoring line (if any offense or shots)
+  if(s.goals>0||s.assists>0||(s.sog+s.soff)>0){
+    const parts=[];
+    if(s.goals>0||s.assists>0)parts.push(`${s.goals}G + ${s.assists}A`);
+    if((s.sog+s.soff)>0&&sp!==null)parts.push(`${sp}% shooting (${s.goals}/${s.sog+s.soff})`);
+    if(parts.length)lines.push(`Scored ${parts.join(' on ')}.`);
+  }
+
+  // Priority 2: playmaking signal (high pass volume with efficiency, OR assist ratio)
+  if(pp!==null&&s.passAtt>=5){
+    let passLine=`${pp}% pass completion (${s.passCmp}/${s.passAtt})`;
+    if(rat&&to>=2)passLine+=`, ${rat} Ast/TO`;
+    lines.push(passLine+'.');
+  } else if(rat&&s.assists>=2&&to>=1){
+    lines.push(`${rat} Ast/TO ratio — ${s.assists} assist${s.assists!==1?'s':''} on ${to} turnover${to!==1?'s':''}.`);
+  }
+
+  // Priority 3: dodging signal (with hand tendency if strong)
+  if(dA>=2){
+    let dodgeLine=`${dp}% DSR (${dS}/${dA})`;
+    if(dA>=3&&s.dlAtt!==s.drAtt){
+      const favorL=s.dlAtt>s.drAtt;
+      const favorPct=Math.round(Math.max(s.dlAtt,s.drAtt)/dA*100);
+      if(favorPct>=65)dodgeLine+=`, favors ${favorL?'left':'right'} (${favorPct}%)`;
+    }
+    lines.push(dodgeLine+'.');
+  }
+
+  // Priority 4: defensive dodge signal
+  if(s.dodgeOn>=2&&dwr!==null){
+    lines.push(`${dwr}% DWR (${s.dodgeBlk}/${s.dodgeOn} blocked).`);
+  }
+
+  // Priority 5: draw control signal
+  if(s.dcWon+s.dcLost>=2){
+    lines.push(`${s.dcWon}/${s.dcWon+s.dcLost} draws (${dcp}%).`);
+  }
+
+  // Priority 6: hustle/defense signal (combine GB + CT if both meaningful)
+  if(s.gbWon>=3||s.ct>=2||s.ints>=2){
+    const hustle=[];
+    if(s.gbWon>=3)hustle.push(`${s.gbWon} GB`);
+    if(s.ct>=2)hustle.push(`${s.ct} CT`);
+    if(s.ints>=2)hustle.push(`${s.ints} INT`);
+    if(hustle.length)lines.push(hustle.join(', ')+'.');
+  }
+
+  // Priority 7: physicality / foul-drawing (only if notable)
+  if(s.fd>=2)lines.push(`Drew ${s.fd} fouls.`);
+
+  // Priority 8: diagnostic warnings (hidden signals that tell a story)
+  if(s.drops>=3&&!lines.some(l=>l.includes('pass')))lines.push(`${s.drops} drops — hands under pressure.`);
+  if((s.sog+s.soff)>=4&&sp!==null&&sp<25)lines.push(`Cold shooting day (${sp}%).`);
+
   if(!lines.length)return{blurb:null,nba:null};
+  // Keep blurb readable — take top 3 prioritized lines
   return{blurb:lines.slice(0,3).join(' '),nba};
 }
 
