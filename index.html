@@ -508,6 +508,440 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#0d1117;color:#e6edf3;mi
   pointer-events:none;text-align:left;line-height:1.4;
 }
 @media(max-width:680px){[data-tip]:hover::after{display:none;}}
+
+/* ═══════════════════════════════════════════════════
+   TABS (nav between Scout Cards and Compare)
+═══════════════════════════════════════════════════ */
+.tab-nav{
+  display:flex;gap:4px;padding:0 24px;margin-top:14px;
+  border-bottom:1px solid #21262d;
+}
+.tab-btn{
+  background:transparent;border:none;color:#8b949e;
+  font-family:inherit;font-size:13px;font-weight:600;
+  padding:10px 18px;cursor:pointer;position:relative;
+  border-radius:8px 8px 0 0;transition:all 0.15s;
+}
+.tab-btn:hover{color:#e6edf3;background:#161b22;}
+.tab-btn.active{color:#58a6ff;}
+.tab-btn.active::after{
+  content:'';position:absolute;left:0;right:0;bottom:-1px;height:2px;
+  background:#58a6ff;
+}
+
+/* View containers */
+.view{display:none;}
+.view.active{display:block;}
+
+/* ═══════════════════════════════════════════════════
+   COMPARE VIEW
+═══════════════════════════════════════════════════ */
+.cmp-container{padding:20px 24px 40px;}
+
+/* Mode filter at top */
+.cmp-mode-row{
+  display:flex;gap:6px;margin-bottom:20px;align-items:center;flex-wrap:wrap;
+}
+.cmp-mode-label{font-size:11px;color:#8b949e;margin-right:4px;}
+.cmp-mode-btn{
+  background:#161b22;border:1px solid #30363d;color:#8b949e;
+  padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;
+  cursor:pointer;font-family:inherit;transition:all 0.15s;
+}
+.cmp-mode-btn:hover{border-color:#58a6ff;color:#e6edf3;}
+.cmp-mode-btn.active{background:#58a6ff;color:#0d1117;border-color:#58a6ff;}
+
+/* Player slots */
+.cmp-slots{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;
+}
+@media(max-width:680px){.cmp-slots{grid-template-columns:1fr;}}
+.cmp-slot{
+  background:#161b22;border:2px dashed #30363d;border-radius:12px;
+  padding:16px;min-height:100px;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;cursor:pointer;
+  transition:all 0.2s;position:relative;
+}
+.cmp-slot:hover{border-color:#58a6ff;background:#1c2128;}
+.cmp-slot.filled{border-style:solid;cursor:default;align-items:flex-start;justify-content:flex-start;}
+.cmp-slot.slot-r.filled{border-color:#f85149;}
+.cmp-slot.slot-b.filled{border-color:#58a6ff;}
+.cmp-slot.slot-y.filled{border-color:#e3b341;}
+.cmp-slot-empty{color:#484f58;font-size:13px;text-align:center;}
+.cmp-slot-empty strong{display:block;font-size:20px;color:#8b949e;margin-bottom:6px;}
+.cmp-slot-player{width:100%;}
+.cmp-slot-name{font-size:14px;font-weight:700;color:#e6edf3;margin-bottom:4px;}
+.cmp-slot-sub{font-size:11px;color:#8b949e;}
+.cmp-slot-remove{
+  position:absolute;top:8px;right:8px;background:none;border:none;
+  color:#8b949e;font-size:16px;cursor:pointer;padding:4px 8px;
+  font-family:inherit;line-height:1;border-radius:4px;
+}
+.cmp-slot-remove:hover{background:#30363d;color:#e6edf3;}
+.cmp-slot-color-dot{
+  display:inline-block;width:10px;height:10px;border-radius:50%;
+  margin-right:6px;vertical-align:middle;
+}
+
+/* Player picker dropdown */
+.cmp-picker-bg{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);
+  z-index:300;padding:40px 16px;overflow-y:auto;
+}
+.cmp-picker-bg.open{display:block;}
+.cmp-picker{
+  background:#161b22;border:1px solid #30363d;border-radius:14px;
+  width:min(520px,100%);margin:0 auto;padding:20px;position:relative;
+}
+.cmp-picker h3{font-size:15px;margin-bottom:12px;color:#e6edf3;}
+.cmp-picker-filters{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap;}
+.cmp-picker-filter{
+  background:#0d1117;border:1px solid #30363d;color:#8b949e;
+  padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;
+  cursor:pointer;font-family:inherit;
+}
+.cmp-picker-filter.active{background:#58a6ff;color:#0d1117;border-color:#58a6ff;}
+.cmp-picker-list{
+  max-height:420px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;
+}
+.cmp-picker-item{
+  display:flex;align-items:center;gap:10px;padding:9px 12px;
+  background:#0d1117;border-radius:6px;cursor:pointer;transition:background 0.1s;
+  border:1px solid transparent;
+}
+.cmp-picker-item:hover{background:#1c2128;border-color:#30363d;}
+.cmp-picker-item.disabled{opacity:0.4;cursor:not-allowed;}
+.cmp-picker-num{
+  font-weight:700;color:#e6edf3;font-size:13px;min-width:34px;
+}
+.cmp-picker-name{flex:1;font-size:13px;color:#e6edf3;}
+.cmp-picker-pos{font-size:10px;color:#8b949e;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;}
+.cmp-picker-close{
+  position:absolute;top:14px;right:14px;background:none;border:none;
+  color:#8b949e;font-size:22px;cursor:pointer;font-family:inherit;line-height:1;
+}
+
+/* Radar overlay section */
+.cmp-radar-section{
+  background:#161b22;border:1px solid #21262d;border-radius:12px;
+  padding:18px;margin-bottom:20px;
+}
+.cmp-radar-hdr{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:12px;flex-wrap:wrap;gap:10px;
+}
+.cmp-radar-title{font-size:13px;font-weight:700;color:#e6edf3;}
+.cmp-radar-legend{display:flex;gap:14px;flex-wrap:wrap;}
+.cmp-legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:#8b949e;}
+.cmp-legend-dot{width:10px;height:10px;border-radius:50%;}
+.cmp-radar-wrap{display:flex;justify-content:center;}
+.cmp-radar-wrap canvas{max-height:360px;max-width:480px;}
+.cmp-radar-empty{
+  text-align:center;padding:60px 20px;color:#484f58;font-size:13px;
+}
+
+/* Preset stat tabs */
+.cmp-preset-row{
+  display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap;
+  border-bottom:1px solid #21262d;padding-bottom:2px;
+}
+.cmp-preset-btn{
+  background:transparent;border:none;color:#8b949e;
+  padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;
+  font-family:inherit;border-bottom:2px solid transparent;
+  transition:all 0.12s;
+}
+.cmp-preset-btn:hover{color:#e6edf3;}
+.cmp-preset-btn.active{color:#58a6ff;border-bottom-color:#58a6ff;}
+
+/* Stat comparison table */
+.cmp-table-wrap{
+  background:#161b22;border:1px solid #21262d;border-radius:12px;
+  padding:14px 18px;margin-bottom:20px;overflow-x:auto;
+}
+.cmp-table{width:100%;border-collapse:collapse;font-size:12px;min-width:340px;}
+.cmp-table th{
+  text-align:left;padding:10px 8px;font-size:10px;font-weight:700;
+  color:#484f58;text-transform:uppercase;letter-spacing:0.08em;
+  border-bottom:1px solid #30363d;
+}
+.cmp-table th.col-player{text-align:center;min-width:90px;}
+.cmp-table td{padding:9px 8px;border-bottom:1px solid #1c2128;font-size:12px;}
+.cmp-table td:first-child{color:#8b949e;}
+.cmp-table td.col-val{text-align:center;color:#e6edf3;font-weight:500;}
+.cmp-table td.col-val.top{color:#3fb950;font-weight:700;background:rgba(63,185,80,0.08);}
+.cmp-table td.col-val.delta-up{color:#3fb950;}
+.cmp-table td.col-val.delta-down{color:#f85149;}
+.cmp-table-delta{font-size:10px;display:block;color:#8b949e;margin-top:2px;}
+.cmp-table-sub{font-size:10px;color:#484f58;display:block;margin-top:2px;}
+
+/* Insight blurb */
+.cmp-insight{
+  background:linear-gradient(135deg,#0d1117,#161b22);
+  border:1px solid #21262d;border-left:3px solid #58a6ff;
+  border-radius:8px;padding:14px 18px;margin-bottom:24px;
+}
+.cmp-insight-hdr{
+  font-size:10px;font-weight:700;color:#58a6ff;letter-spacing:0.12em;
+  text-transform:uppercase;margin-bottom:8px;
+}
+.cmp-insight-body{font-size:13px;color:#e6edf3;line-height:1.6;}
+.cmp-insight-body strong{color:#58a6ff;}
+
+/* Empty state */
+.cmp-empty{
+  text-align:center;padding:60px 20px;color:#484f58;font-size:14px;
+}
+.cmp-empty strong{display:block;color:#8b949e;font-size:16px;margin-bottom:6px;}
+
+/* ═══════════════════════════════════════════════════
+   SHOT ENTRY SCREEN
+═══════════════════════════════════════════════════ */
+
+/* Full-screen overlay */
+.shot-entry-bg{
+  display:none;position:fixed;inset:0;background:#04080f;
+  z-index:400;overflow-y:auto;
+}
+.shot-entry-bg.open{display:block;}
+
+.se-header{
+  background:#0d1117;border-bottom:1px solid #21262d;
+  padding:14px 24px;display:flex;justify-content:space-between;align-items:center;
+  position:sticky;top:0;z-index:10;gap:16px;
+}
+.se-header-left{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.se-title{font-size:15px;font-weight:700;color:#e6edf3;}
+.se-subtitle{font-size:12px;color:#8b949e;}
+.se-counts{
+  display:flex;gap:12px;font-size:12px;color:#8b949e;
+  background:#161b22;border:1px solid #21262d;border-radius:6px;padding:4px 10px;
+}
+.se-counts strong{color:#e6edf3;margin-right:2px;}
+.se-close{
+  background:#21262d;border:1px solid #30363d;color:#e6edf3;
+  padding:7px 14px;border-radius:8px;font-weight:600;font-size:12px;
+  cursor:pointer;font-family:inherit;
+}
+.se-close:hover{background:#30363d;}
+
+/* Game Setup strip */
+.se-gamesetup{
+  background:#161b22;border-bottom:1px solid #21262d;
+  padding:12px 24px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;
+}
+.se-gs-group{display:flex;align-items:center;gap:8px;}
+.se-gs-label{font-size:11px;font-weight:700;color:#8b949e;text-transform:uppercase;letter-spacing:0.06em;}
+.se-gs-select{
+  background:#0d1117;border:1px solid #30363d;color:#e6edf3;
+  padding:6px 10px;border-radius:6px;font-size:12px;font-family:inherit;cursor:pointer;
+}
+.se-gs-select:focus{outline:none;border-color:#58a6ff;}
+.se-gs-btn{
+  background:transparent;border:1px solid #30363d;color:#8b949e;
+  padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;
+  cursor:pointer;font-family:inherit;
+}
+.se-gs-btn:hover{color:#e6edf3;border-color:#58a6ff;}
+
+/* Main content layout */
+.se-main{display:grid;grid-template-columns:1fr 400px;gap:20px;padding:20px 24px;}
+@media(max-width:980px){.se-main{grid-template-columns:1fr;}}
+
+/* Left: field diagram */
+.se-left{background:#161b22;border:1px solid #21262d;border-radius:12px;padding:16px;}
+.se-left-hdr{
+  font-size:11px;font-weight:700;color:#8b949e;text-transform:uppercase;
+  letter-spacing:0.08em;margin-bottom:10px;
+}
+.se-field-wrap{
+  position:relative;width:100%;max-width:520px;margin:0 auto;
+  aspect-ratio:3/4;background:#0a1f0a;border-radius:8px;overflow:hidden;
+  cursor:crosshair;user-select:none;
+}
+.se-field-svg{
+  position:absolute;inset:0;width:100%;height:100%;
+  pointer-events:none;
+}
+.se-field-hint{
+  position:absolute;top:10px;left:50%;transform:translateX(-50%);
+  font-size:11px;color:rgba(255,255,255,0.5);background:rgba(0,0,0,0.4);
+  padding:4px 10px;border-radius:12px;pointer-events:none;
+}
+.se-field-dot{
+  position:absolute;width:14px;height:14px;border-radius:50%;
+  transform:translate(-50%,-50%);pointer-events:none;
+  box-shadow:0 0 10px rgba(255,255,255,0.6);
+  animation:sePulse 1.5s ease infinite;
+}
+@keyframes sePulse{0%,100%{transform:translate(-50%,-50%) scale(1);}50%{transform:translate(-50%,-50%) scale(1.25);}}
+
+/* Right: entry panel */
+.se-right{display:flex;flex-direction:column;gap:14px;}
+
+.se-panel{background:#161b22;border:1px solid #21262d;border-radius:12px;padding:14px;}
+.se-panel-hdr{
+  font-size:10px;font-weight:700;color:#8b949e;text-transform:uppercase;
+  letter-spacing:0.1em;margin-bottom:10px;
+}
+
+/* Player selector */
+.se-player-current{
+  display:flex;align-items:center;gap:10px;padding:8px 12px;
+  background:#0d1117;border:1px solid #30363d;border-radius:8px;cursor:pointer;
+  transition:border-color 0.15s;
+}
+.se-player-current:hover{border-color:#58a6ff;}
+.se-player-current.empty{color:#484f58;}
+.se-player-num{font-weight:700;color:#e6edf3;min-width:34px;}
+.se-player-name{flex:1;color:#e6edf3;font-weight:600;}
+.se-player-arrow{color:#484f58;font-size:11px;}
+
+/* Result buttons */
+.se-results{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;}
+.se-result-btn{
+  padding:12px 8px;border-radius:8px;border:2px solid transparent;
+  background:#0d1117;color:#8b949e;font-family:inherit;font-size:13px;font-weight:700;
+  cursor:pointer;text-transform:uppercase;letter-spacing:0.05em;
+  transition:all 0.12s;
+}
+.se-result-btn:hover{background:#1c2128;}
+.se-result-btn.goal.active{background:rgba(63,185,80,0.2);border-color:#3fb950;color:#3fb950;}
+.se-result-btn.save.active{background:rgba(227,179,65,0.2);border-color:#e3b341;color:#e3b341;}
+.se-result-btn.miss.active{background:rgba(248,81,73,0.2);border-color:#f85149;color:#f85149;}
+.se-result-btn.pipe.active{background:rgba(110,110,120,0.25);border-color:#8b949e;color:#c8d0df;}
+.se-result-shortcut{
+  display:block;font-size:9px;margin-top:2px;color:#484f58;font-weight:500;letter-spacing:0.04em;
+}
+
+/* Net diagram */
+.se-net-wrap{
+  position:relative;width:100%;max-width:340px;margin:6px auto 0;
+  aspect-ratio:1/1;
+}
+.se-net{
+  position:relative;width:100%;height:100%;
+}
+.se-net-inner{
+  position:absolute;top:25%;left:20%;width:60%;height:60%;
+  background:#0d1117;border:2px solid #21262d;
+  display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:1px;
+}
+.se-net-zone{
+  background:#1c2128;cursor:pointer;transition:background 0.12s;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;color:#484f58;font-weight:600;
+}
+.se-net-zone:hover{background:#30363d;}
+.se-net-zone.active{background:rgba(63,185,80,0.3);color:#3fb950;}
+.se-net-zone.save-color.active{background:rgba(227,179,65,0.3);color:#e3b341;}
+.se-net-zone.pipe-color.active{background:rgba(110,110,120,0.3);color:#c8d0df;}
+.se-net-zone.disabled{opacity:0.25;cursor:not-allowed;}
+
+.se-net-outer{
+  position:absolute;inset:0;pointer-events:none;
+}
+.se-net-outer-zone{
+  position:absolute;background:rgba(40,40,50,0.4);cursor:pointer;
+  transition:background 0.12s;pointer-events:auto;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;color:#484f58;font-weight:600;
+}
+.se-net-outer-zone:hover{background:rgba(60,60,70,0.5);}
+.se-net-outer-zone.active{background:rgba(248,81,73,0.25);color:#f85149;}
+.se-net-outer-zone.disabled{opacity:0.2;cursor:not-allowed;}
+/* Outer zones: top-left, top-center, top-right, left, right, bottom-span */
+.se-outer-TL{top:0;left:0;width:20%;height:25%;}
+.se-outer-T{top:0;left:20%;width:60%;height:25%;}
+.se-outer-TR{top:0;right:0;width:20%;height:25%;}
+.se-outer-L{top:25%;left:0;width:20%;height:60%;}
+.se-outer-R{top:25%;right:0;width:20%;height:60%;}
+.se-outer-B{top:85%;left:0;width:100%;height:15%;}
+
+/* Shot type + assist */
+.se-selector-row{display:flex;gap:6px;}
+.se-type-btn{
+  flex:1;padding:7px 8px;border-radius:6px;border:1px solid #30363d;
+  background:#0d1117;color:#8b949e;font-family:inherit;font-size:11px;
+  font-weight:600;cursor:pointer;text-transform:uppercase;letter-spacing:0.04em;
+}
+.se-type-btn:hover{border-color:#58a6ff;}
+.se-type-btn.active{background:#58a6ff;color:#0d1117;border-color:#58a6ff;}
+.se-assist-row{display:flex;align-items:center;gap:8px;margin-top:8px;}
+.se-assist-row label{font-size:11px;color:#8b949e;}
+.se-assist-select{
+  flex:1;background:#0d1117;border:1px solid #30363d;color:#e6edf3;
+  padding:6px 8px;border-radius:6px;font-size:12px;font-family:inherit;
+}
+
+/* Action buttons */
+.se-actions{display:flex;gap:6px;margin-top:8px;}
+.se-log-btn{
+  flex:1;padding:11px;background:#238636;color:#fff;border:none;border-radius:8px;
+  font-family:inherit;font-weight:700;font-size:13px;cursor:pointer;
+  text-transform:uppercase;letter-spacing:0.06em;transition:background 0.12s;
+}
+.se-log-btn:hover{background:#2ea043;}
+.se-log-btn:disabled{background:#30363d;color:#484f58;cursor:not-allowed;}
+.se-undo-btn{
+  padding:11px 14px;background:#21262d;color:#8b949e;border:1px solid #30363d;
+  border-radius:8px;font-family:inherit;font-weight:600;font-size:12px;cursor:pointer;
+}
+.se-undo-btn:hover{color:#e6edf3;border-color:#f85149;color:#f85149;}
+
+/* Shot log table */
+.se-log{background:#161b22;border:1px solid #21262d;border-radius:12px;
+  padding:14px;margin:0 24px 24px;}
+.se-log-hdr{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:11px;font-weight:700;color:#8b949e;text-transform:uppercase;
+  letter-spacing:0.08em;margin-bottom:10px;
+}
+.se-log-table{width:100%;border-collapse:collapse;font-size:12px;}
+.se-log-table th{
+  text-align:left;padding:8px 6px;font-size:9px;font-weight:700;color:#484f58;
+  text-transform:uppercase;letter-spacing:0.08em;border-bottom:1px solid #30363d;
+}
+.se-log-table td{padding:7px 6px;border-bottom:1px solid #1c2128;}
+.se-log-table tr:hover{background:rgba(88,166,255,0.04);}
+.se-log-dot{
+  display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;
+}
+.se-log-dot.goal{background:#3fb950;}
+.se-log-dot.save{background:#e3b341;}
+.se-log-dot.miss{background:#f85149;}
+.se-log-dot.pipe{background:#8b949e;}
+.se-log-del{
+  background:none;border:none;color:#8b949e;font-size:14px;cursor:pointer;
+  padding:2px 6px;font-family:inherit;
+}
+.se-log-del:hover{color:#f85149;}
+
+/* Player picker modal (reuse cmp-picker-bg styles but apply via se-picker-bg) */
+.se-picker-bg{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);
+  z-index:500;padding:40px 16px;overflow-y:auto;
+}
+.se-picker-bg.open{display:block;}
+.se-picker{
+  background:#161b22;border:1px solid #30363d;border-radius:14px;
+  width:min(420px,100%);margin:0 auto;padding:18px;position:relative;
+}
+.se-picker h3{font-size:14px;margin-bottom:10px;color:#e6edf3;}
+.se-picker-list{max-height:60vh;overflow-y:auto;display:flex;flex-direction:column;gap:3px;}
+.se-picker-item{
+  display:flex;align-items:center;gap:10px;padding:8px 10px;
+  background:#0d1117;border-radius:6px;cursor:pointer;
+}
+.se-picker-item:hover{background:#1c2128;}
+.se-picker-close{
+  position:absolute;top:12px;right:12px;background:none;border:none;
+  color:#8b949e;font-size:20px;cursor:pointer;font-family:inherit;
+}
+
+/* "Log shots" entry button in action bar */
+.log-shots-btn{color:#8b949e;}
+.log-shots-btn:hover{border-color:#58a6ff;color:#58a6ff;}
 </style>
 </head>
 <body>
@@ -682,6 +1116,12 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#0d1117;color:#e6edf3;mi
     </div>
   </div>
 
+  <div class="tab-nav">
+    <button class="tab-btn active" id="tabScout" onclick="switchTab('scout')">Scout Cards</button>
+    <button class="tab-btn" id="tabCompare" onclick="switchTab('compare')">Compare</button>
+  </div>
+
+  <div class="view active" id="viewScout">
   <div class="controls">
     <div class="controls-left">
       <button class="filter-btn on" onclick="setFilter('ALL',this)">All</button>
@@ -699,6 +1139,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#0d1117;color:#e6edf3;mi
     </div>
     <div class="action-btns">
       <button class="ctrl-btn orange" id="editBtn" style="display:none" onclick="openEdit()">Edit game</button>
+      <button class="ctrl-btn log-shots-btn" id="shotBtn" style="display:none" onclick="openShotEntry()">Log shots</button>
       <button class="ctrl-btn red"    id="delBtn"  style="display:none" onclick="deleteSelected()">Delete game</button>
       <div class="log-game-wrap">
         <button class="ctrl-btn green log-game-btn" id="logGameBtn" onclick="toggleLogDropdown()">Log game &#9660;</button>
@@ -708,6 +1149,88 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#0d1117;color:#e6edf3;mi
   </div>
 
   <div class="grid" id="grid"><div class="empty-state">Loading...</div></div>
+  </div><!-- /viewScout -->
+
+  <div class="view" id="viewCompare">
+    <div class="cmp-container">
+
+      <!-- Mode filter -->
+      <div class="cmp-mode-row">
+        <span class="cmp-mode-label">View:</span>
+        <button class="cmp-mode-btn active" data-mode="recent" onclick="setCmpMode('recent')">Current form</button>
+        <button class="cmp-mode-btn" data-mode="season" onclick="setCmpMode('season')">Season totals</button>
+        <button class="cmp-mode-btn" data-mode="delta" onclick="setCmpMode('delta')">Form vs season</button>
+      </div>
+
+      <!-- Player slots -->
+      <div class="cmp-slots" id="cmpSlots">
+        <div class="cmp-slot slot-r" data-slot="0" onclick="openCmpPicker(0)">
+          <div class="cmp-slot-empty"><strong>+</strong>Add player</div>
+        </div>
+        <div class="cmp-slot slot-b" data-slot="1" onclick="openCmpPicker(1)">
+          <div class="cmp-slot-empty"><strong>+</strong>Add player</div>
+        </div>
+        <div class="cmp-slot slot-y" data-slot="2" onclick="openCmpPicker(2)">
+          <div class="cmp-slot-empty"><strong>+</strong>Add player</div>
+        </div>
+      </div>
+
+      <!-- Radar overlay -->
+      <div class="cmp-radar-section" id="cmpRadarSection" style="display:none;">
+        <div class="cmp-radar-hdr">
+          <div class="cmp-radar-title">Skill comparison</div>
+          <div class="cmp-radar-legend" id="cmpRadarLegend"></div>
+        </div>
+        <div class="cmp-radar-wrap">
+          <canvas id="cmpRadarCanvas" height="360"></canvas>
+        </div>
+      </div>
+
+      <!-- Preset stat tabs -->
+      <div class="cmp-preset-row" id="cmpPresetRow" style="display:none;">
+        <button class="cmp-preset-btn active" data-preset="shooting" onclick="setCmpPreset('shooting')">Shooting</button>
+        <button class="cmp-preset-btn" data-preset="dodging" onclick="setCmpPreset('dodging')">Dodging</button>
+        <button class="cmp-preset-btn" data-preset="defense" onclick="setCmpPreset('defense')">Defense</button>
+        <button class="cmp-preset-btn" data-preset="passing" onclick="setCmpPreset('passing')">Passing</button>
+        <button class="cmp-preset-btn" data-preset="discipline" onclick="setCmpPreset('discipline')">Discipline</button>
+      </div>
+
+      <!-- Stat table -->
+      <div class="cmp-table-wrap" id="cmpTableWrap" style="display:none;">
+        <table class="cmp-table" id="cmpTable"></table>
+      </div>
+
+      <!-- Auto-insight blurb -->
+      <div class="cmp-insight" id="cmpInsight" style="display:none;">
+        <div class="cmp-insight-hdr">Coach's Read</div>
+        <div class="cmp-insight-body" id="cmpInsightBody"></div>
+      </div>
+
+      <!-- Empty state -->
+      <div class="cmp-empty" id="cmpEmpty">
+        <strong>Select players to compare</strong>
+        Pick 2–3 players above to see their radar, stats, and coaching insights side by side.
+      </div>
+
+    </div>
+  </div><!-- /viewCompare -->
+
+  <!-- Player picker modal -->
+  <div class="cmp-picker-bg" id="cmpPickerBg" onclick="if(event.target===this)closeCmpPicker()">
+    <div class="cmp-picker">
+      <button class="cmp-picker-close" onclick="closeCmpPicker()">×</button>
+      <h3>Choose a player</h3>
+      <div class="cmp-picker-filters" id="cmpPickerFilters">
+        <button class="cmp-picker-filter active" data-pos="ALL" onclick="setCmpPickerPos('ALL')">All</button>
+        <button class="cmp-picker-filter" data-pos="A" onclick="setCmpPickerPos('A')">Attack</button>
+        <button class="cmp-picker-filter" data-pos="M" onclick="setCmpPickerPos('M')">Midfield</button>
+        <button class="cmp-picker-filter" data-pos="D" onclick="setCmpPickerPos('D')">Defense</button>
+        <button class="cmp-picker-filter" data-pos="G" onclick="setCmpPickerPos('G')">Goalie</button>
+      </div>
+      <div class="cmp-picker-list" id="cmpPickerList"></div>
+    </div>
+  </div>
+
 <div class="glossary-section">
   <button class="glossary-toggle" onclick="toggleGlossary()">
     <span>📖 Stat Glossary</span>
@@ -797,6 +1320,195 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#0d1117;color:#e6edf3;mi
 
   </div>
 </div>
+</div>
+
+<!-- ═══════════════ SHOT ENTRY OVERLAY ═══════════════ -->
+<div class="shot-entry-bg" id="shotEntryBg">
+  <div class="se-header">
+    <div class="se-header-left">
+      <div>
+        <div class="se-title" id="seTitle">Log shots</div>
+        <div class="se-subtitle" id="seSubtitle">Tap the field, pick a result, tap the net</div>
+      </div>
+      <div class="se-counts" id="seCounts">
+        <div><strong id="seCount">0</strong>logged</div>
+        <div><strong id="seGoals">0</strong>G</div>
+        <div><strong id="seSaves">0</strong>S</div>
+        <div><strong id="seMisses">0</strong>M</div>
+      </div>
+    </div>
+    <button class="se-close" onclick="closeShotEntry()">Done ✓</button>
+  </div>
+
+  <!-- Game Setup strip -->
+  <div class="se-gamesetup">
+    <div class="se-gs-group">
+      <span class="se-gs-label">Team shooting:</span>
+      <select class="se-gs-select" id="seTeam" onchange="setShotTeam(this.value)">
+        <option value="us">Our team</option>
+        <option value="opp">Opponent</option>
+      </select>
+    </div>
+    <div class="se-gs-group">
+      <span class="se-gs-label">Our goalie in net:</span>
+      <select class="se-gs-select" id="seOurGoalie"></select>
+    </div>
+    <div class="se-gs-group">
+      <span class="se-gs-label">Opp goalie hand:</span>
+      <select class="se-gs-select" id="seOppHand" onchange="setOppHand(this.value)">
+        <option value="">—</option>
+        <option value="R">Right</option>
+        <option value="L">Left</option>
+      </select>
+    </div>
+    <div class="se-gs-group">
+      <span class="se-gs-label">Quarter:</span>
+      <select class="se-gs-select" id="seQuarter">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Main: field + entry panel -->
+  <div class="se-main">
+    <!-- LEFT: field diagram -->
+    <div class="se-left">
+      <div class="se-left-hdr" id="seFieldHdr">Tap shot location on field</div>
+      <div class="se-field-wrap" id="seFieldWrap" onclick="onFieldTap(event)">
+        <svg class="se-field-svg" viewBox="0 0 300 400" preserveAspectRatio="none">
+          <!-- Field background -->
+          <rect x="0" y="0" width="300" height="400" fill="#0d2d0d"/>
+          <!-- Field stripes -->
+          <rect x="0" y="0" width="300" height="50" fill="#0f3310" opacity="0.6"/>
+          <rect x="0" y="100" width="300" height="50" fill="#0f3310" opacity="0.6"/>
+          <rect x="0" y="200" width="300" height="50" fill="#0f3310" opacity="0.6"/>
+          <rect x="0" y="300" width="300" height="50" fill="#0f3310" opacity="0.6"/>
+          <!-- Restraining line (top) -->
+          <line x1="0" y1="60" x2="300" y2="60" stroke="#fff" stroke-width="1.5" opacity="0.7"/>
+          <text x="150" y="54" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="10" font-family="Arial">RESTRAINING LINE</text>
+          <!-- 12m fan -->
+          <path d="M 100 370 A 60 60 0 0 1 200 370" stroke="#fff" stroke-width="1" fill="none" opacity="0.5"/>
+          <text x="150" y="315" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="9" font-family="Arial">12m</text>
+          <!-- 8m arc -->
+          <path d="M 120 370 A 35 35 0 0 1 180 370" stroke="#fff" stroke-width="1" fill="none" opacity="0.5"/>
+          <text x="150" y="345" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="9" font-family="Arial">8m</text>
+          <!-- Crease -->
+          <ellipse cx="150" cy="370" rx="22" ry="14" stroke="#fff" stroke-width="1" fill="none" opacity="0.6"/>
+          <!-- Goal line -->
+          <line x1="120" y1="370" x2="180" y2="370" stroke="#fff" stroke-width="1" opacity="0.7"/>
+          <!-- Goal (cage) -->
+          <rect x="142" y="368" width="16" height="4" fill="none" stroke="#fff" stroke-width="1.5" opacity="0.9"/>
+          <!-- Sidelines -->
+          <line x1="1" y1="0" x2="1" y2="400" stroke="#fff" stroke-width="1" opacity="0.6"/>
+          <line x1="299" y1="0" x2="299" y2="400" stroke="#fff" stroke-width="1" opacity="0.6"/>
+          <line x1="0" y1="399" x2="300" y2="399" stroke="#fff" stroke-width="1" opacity="0.6"/>
+          <text x="150" y="395" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-size="8" font-family="Arial">ENDLINE</text>
+        </svg>
+        <div class="se-field-hint" id="seFieldHint">Tap where the shot was taken</div>
+        <div class="se-field-dot" id="seFieldDot" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: entry panel -->
+    <div class="se-right">
+      <!-- Player selector -->
+      <div class="se-panel">
+        <div class="se-panel-hdr">Shooter</div>
+        <div class="se-player-current empty" id="sePlayerCurrent" onclick="openSePicker()">
+          <span class="se-player-num" id="sePlayerNum">—</span>
+          <span class="se-player-name" id="sePlayerName">Pick a shooter</span>
+          <span class="se-player-arrow">▸</span>
+        </div>
+      </div>
+
+      <!-- Result buttons -->
+      <div class="se-panel">
+        <div class="se-panel-hdr">Result</div>
+        <div class="se-results">
+          <button class="se-result-btn goal" data-result="goal" onclick="setShotResult('goal')">Goal<span class="se-result-shortcut">G</span></button>
+          <button class="se-result-btn save" data-result="save" onclick="setShotResult('save')">Save<span class="se-result-shortcut">S</span></button>
+          <button class="se-result-btn miss" data-result="miss" onclick="setShotResult('miss')">Miss wide<span class="se-result-shortcut">M</span></button>
+          <button class="se-result-btn pipe" data-result="pipe" onclick="setShotResult('pipe')">Pipe<span class="se-result-shortcut">P</span></button>
+        </div>
+      </div>
+
+      <!-- Net diagram -->
+      <div class="se-panel">
+        <div class="se-panel-hdr" id="seNetHdr">Net location</div>
+        <div class="se-net-wrap">
+          <div class="se-net" id="seNet">
+            <!-- Inner 3x3 grid -->
+            <div class="se-net-inner" id="seNetInner">
+              <div class="se-net-zone" data-zone="TL" onclick="setNetZone('TL')">TL</div>
+              <div class="se-net-zone" data-zone="TC" onclick="setNetZone('TC')">T</div>
+              <div class="se-net-zone" data-zone="TR" onclick="setNetZone('TR')">TR</div>
+              <div class="se-net-zone" data-zone="ML" onclick="setNetZone('ML')">L</div>
+              <div class="se-net-zone" data-zone="MC" onclick="setNetZone('MC')">C</div>
+              <div class="se-net-zone" data-zone="MR" onclick="setNetZone('MR')">R</div>
+              <div class="se-net-zone" data-zone="BL" onclick="setNetZone('BL')">BL</div>
+              <div class="se-net-zone" data-zone="BC" onclick="setNetZone('BC')">B</div>
+              <div class="se-net-zone" data-zone="BR" onclick="setNetZone('BR')">BR</div>
+            </div>
+            <!-- Outer miss zones (6 regions around the net) -->
+            <div class="se-net-outer" id="seNetOuter">
+              <div class="se-net-outer-zone se-outer-TL" data-zone="OTL" onclick="setNetZone('OTL')">TL</div>
+              <div class="se-net-outer-zone se-outer-T" data-zone="OT" onclick="setNetZone('OT')">OVER</div>
+              <div class="se-net-outer-zone se-outer-TR" data-zone="OTR" onclick="setNetZone('OTR')">TR</div>
+              <div class="se-net-outer-zone se-outer-L" data-zone="OL" onclick="setNetZone('OL')">WIDE L</div>
+              <div class="se-net-outer-zone se-outer-R" data-zone="OR" onclick="setNetZone('OR')">WIDE R</div>
+              <div class="se-net-outer-zone se-outer-B" data-zone="OB" onclick="setNetZone('OB')">LOW</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shot type + Assist -->
+      <div class="se-panel">
+        <div class="se-panel-hdr">Shot type (optional)</div>
+        <div class="se-selector-row">
+          <button class="se-type-btn" data-type="dodge" onclick="setShotType('dodge')">Dodge</button>
+          <button class="se-type-btn" data-type="catch_shoot" onclick="setShotType('catch_shoot')">Catch &amp; shoot</button>
+          <button class="se-type-btn" data-type="free_pos" onclick="setShotType('free_pos')">Free pos</button>
+        </div>
+        <div class="se-assist-row" id="seAssistRow" style="display:none;">
+          <label>Assisted by:</label>
+          <select class="se-assist-select" id="seAssistSelect"></select>
+        </div>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="se-actions">
+        <button class="se-log-btn" id="seLogBtn" onclick="logShot()" disabled>Log shot</button>
+        <button class="se-undo-btn" onclick="undoLastShot()" title="Undo last shot (Ctrl+Z)">⟲</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shot log table -->
+  <div class="se-log">
+    <div class="se-log-hdr">
+      <span>Shot log</span>
+      <span id="seLogCount" style="font-weight:400;color:#484f58;">0 shots</span>
+    </div>
+    <table class="se-log-table">
+      <thead>
+        <tr><th>#</th><th>Player</th><th>Result</th><th>Type</th><th>Qtr</th><th></th></tr>
+      </thead>
+      <tbody id="seLogBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Shot entry player picker -->
+<div class="se-picker-bg" id="sePickerBg" onclick="if(event.target===this)closeSePicker()">
+  <div class="se-picker">
+    <button class="se-picker-close" onclick="closeSePicker()">×</button>
+    <h3 id="sePickerTitle">Choose shooter</h3>
+    <div class="se-picker-list" id="sePickerList"></div>
+  </div>
 </div>
 
 <!-- ═══════════════ MODAL ═══════════════ -->
@@ -914,6 +1626,25 @@ const db = {
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
 let ROSTER=[], GAMES=[], posFilter='ALL', curIdxs=[], nbaMap={}, editId=null;
+// Compare view state
+let cmpSlots=[null,null,null]; // array of jersey numbers (or null)
+
+// Shot entry state
+let seGameId=null;               // which game's shots we're logging
+let seShots=[];                  // in-memory buffer of this session's shots
+let seCurrent={                  // current in-progress shot
+  team:'us',jersey:null,fieldX:null,fieldY:null,
+  result:null,netZone:null,shotType:null,assistedBy:null,quarter:1
+};
+let seTeam='us';
+let seOppHand='';
+let seOurGoalie=null;
+let seSaveDebounce=null;
+let cmpMode='recent'; // 'recent' | 'season' | 'delta'
+let cmpPreset='shooting'; // 'shooting' | 'dodging' | 'defense' | 'passing' | 'discipline'
+let cmpPickerSlot=null; // which slot is currently being picked for
+let cmpPickerPos='ALL'; // position filter in picker
+let cmpRadarChart=null; // Chart.js instance for compare radar
 const rCharts={};
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
@@ -973,6 +1704,69 @@ async function refresh(){
   curIdxs=GAMES.map((_,i)=>i);
   document.getElementById('gameSelect').value='season';
   onGameChange();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SHOT ENTRY — DATA PERSISTENCE
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Insert one shot into Supabase
+async function saveShotToDb(shot){
+  try {
+    const row={
+      game_id:shot.game_id,
+      team:shot.team,
+      jersey:shot.jersey,
+      goalie_jersey:shot.goalie_jersey||null,
+      opponent_goalie_hand:shot.opponent_goalie_hand||null,
+      field_x:shot.field_x,
+      field_y:shot.field_y,
+      net_zone:shot.net_zone||null,
+      result:shot.result,
+      shot_type:shot.shot_type||null,
+      assisted_by:shot.assisted_by||null,
+      quarter:shot.quarter||1,
+    };
+    const result=await db.post('shots',row);
+    return result&&result[0]?result[0]:null;
+  } catch(e){
+    console.error('Shot save failed:',e);
+    toast('Failed to save shot','error');
+    return null;
+  }
+}
+
+// Delete one shot from Supabase
+async function deleteShotFromDb(shotId){
+  try {
+    await db.del('shots','id=eq.'+shotId);
+    return true;
+  } catch(e){
+    console.error('Shot delete failed:',e);
+    toast('Failed to delete shot','error');
+    return false;
+  }
+}
+
+// Fetch all shots for a given game
+async function fetchShotsForGame(gameId){
+  try {
+    return await db.get('shots','game_id=eq.'+gameId+'&order=created_at.asc')||[];
+  } catch(e){
+    console.error('Shot fetch failed:',e);
+    return [];
+  }
+}
+
+// Save game-level goalie / opp-hand metadata
+async function saveGameGoalieMeta(gameId,ourGoalies,oppHand){
+  try {
+    await db.patch('games','id=eq.'+gameId,{our_goalies:ourGoalies,opp_goalie_hand:oppHand||null});
+    return true;
+  } catch(e){
+    console.error('Game meta save failed:',e);
+    return false;
+  }
 }
 
 // ── MERGE ─────────────────────────────────────────────────────────────────────
@@ -1323,6 +2117,7 @@ function onGameChange(){
   curIdxs=single?[parseInt(v)]:GAMES.map((_,i)=>i);
   document.getElementById('editBtn').style.display=single?'':'none';
   document.getElementById('delBtn').style.display=single?'':'none';
+  const sb=document.getElementById('shotBtn');if(sb)sb.style.display=single?'':'none';
   buildGrid(); updateTop();
 }
 function updateTop(){
@@ -1386,7 +2181,7 @@ function buildCard(player,all){
     <div class="fd-row"><span class="fd-lbl">GSO allowed</span><span class="fd-val">${s.gsoAllowed}</span></div>`:''}
   </div>
 </div>`;
-  return `<div class="card" data-pos="${pos}" data-jersey="${player.jersey}" id="card_${player.jersey}"><div class="card-header"><div class="avatar av-${pos}">${ini(player.name)}</div><div><div class="card-name">#${player.jersey} ${player.name}<span class="pos-pill pill-${pos}">${posL(player.position)}</span></div><div class="card-sub">Class of ${player.grad_year} · ${player.hand}-handed</div></div></div>${blurb?`<div class="blurb"><div class="blurb-text">${blurb}</div>${nba?`<div class="nba-comp">NBA comp: <span>${nba}</span></div>`:''}</div>`:''}<div class="radar-wrap"><canvas id="radar_${player.jersey}" height="170"></canvas></div>${strip}${bars}${dodge}<button class="expand-btn" id="expBtn_${player.jersey}" onclick="toggleDetail(event,${player.jersey})">All stats ▾</button><div class="full-detail" id="det_${player.jersey}">${fd}</div></div>`;
+  return `<div class="card" data-pos="${pos}" data-jersey="${player.jersey}" id="card_${player.jersey}"><div class="card-header"><div class="avatar av-${pos}">${ini(player.name)}</div><div><div class="card-name">#${player.jersey} ${player.name}<span class="pos-pill pill-${pos}">${posL(player.position)}</span></div><div class="card-sub">Class of ${player.grad_year} · ${player.hand}-handed</div></div></div>${blurb?`<div class="blurb"><div class="blurb-text">${blurb}</div>${nba?`<div class="nba-comp">NBA comp: <span>${nba}</span></div>`:''}</div>`:''}<div class="radar-wrap"><canvas id="radar_${player.jersey}" height="170"></canvas></div>${strip}${bars}${dodge}<button class="expand-btn" id="expBtn_${player.jersey}" onclick="toggleDetail(event,${player.jersey})">All stats ▾</button><div class="full-detail" id="det_${player.jersey}">${fd}<div style="margin-top:14px;padding-top:12px;border-top:1px solid #21262d;text-align:center;"><button class="ctrl-btn green" style="padding:8px 16px;font-size:12px;" onclick="jumpToCompareWith(${player.jersey})">Compare with others ⇢</button></div></div></div>`;
 }
 
 function drawRadar(player,all){
@@ -1436,6 +2231,874 @@ function drawRadar(player,all){
 }
 function toggleDodge(e,j){e.stopPropagation();const d=document.getElementById('dd_'+j),a=document.getElementById('da_'+j),o=d.classList.toggle('open');a.textContent=o?'▾':'▸';}
 function toggleDetail(e,j){e.stopPropagation();const d=document.getElementById('det_'+j),b=document.getElementById('expBtn_'+j),c=document.getElementById('card_'+j),o=d.classList.toggle('open');b.textContent=o?'Hide stats ▴':'All stats ▾';c.classList.toggle('expanded',o);}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// COMPARE VIEW LOGIC
+// ═══════════════════════════════════════════════════════════════════════════
+
+function switchTab(which){
+  const s=document.getElementById('viewScout'),c=document.getElementById('viewCompare');
+  const ts=document.getElementById('tabScout'),tc=document.getElementById('tabCompare');
+  if(which==='compare'){
+    s.classList.remove('active');c.classList.add('active');
+    ts.classList.remove('active');tc.classList.add('active');
+    renderCompare();
+  } else {
+    c.classList.remove('active');s.classList.add('active');
+    tc.classList.remove('active');ts.classList.add('active');
+  }
+}
+
+function jumpToCompareWith(jersey){
+  // Reset slots, put this player in slot 0
+  cmpSlots=[jersey,null,null];
+  switchTab('compare');
+}
+
+// ── Player picker modal ──────────────────────────────────────────────────────
+function openCmpPicker(slotIdx){
+  cmpPickerSlot=slotIdx;
+  document.getElementById('cmpPickerBg').classList.add('open');
+  renderCmpPickerList();
+}
+function closeCmpPicker(){
+  document.getElementById('cmpPickerBg').classList.remove('open');
+  cmpPickerSlot=null;
+}
+function setCmpPickerPos(p){
+  cmpPickerPos=p;
+  document.querySelectorAll('.cmp-picker-filter').forEach(b=>{
+    b.classList.toggle('active',b.dataset.pos===p);
+  });
+  renderCmpPickerList();
+}
+function renderCmpPickerList(){
+  const list=document.getElementById('cmpPickerList');
+  const filtered=cmpPickerPos==='ALL'
+    ? ROSTER
+    : ROSTER.filter(p=>posN(p.position)===cmpPickerPos);
+  if(!filtered.length){
+    list.innerHTML='<div style="padding:20px;text-align:center;color:#484f58;">No players match this filter.</div>';
+    return;
+  }
+  list.innerHTML=filtered.map(p=>{
+    const already=cmpSlots.includes(p.jersey);
+    return `<div class="cmp-picker-item${already?' disabled':''}" ${already?'':'onclick="pickCmpPlayer('+p.jersey+')"'}>
+      <span class="cmp-picker-num">#${p.jersey}</span>
+      <span class="cmp-picker-name">${p.name}</span>
+      <span class="cmp-picker-pos">${posL(p.position)}</span>
+    </div>`;
+  }).join('');
+}
+function pickCmpPlayer(jersey){
+  if(cmpPickerSlot===null)return;
+  cmpSlots[cmpPickerSlot]=jersey;
+  closeCmpPicker();
+  renderCompare();
+}
+function removeCmpSlot(slotIdx){
+  cmpSlots[slotIdx]=null;
+  renderCompare();
+}
+
+// ── Mode / preset switching ──────────────────────────────────────────────────
+function setCmpMode(mode){
+  cmpMode=mode;
+  document.querySelectorAll('.cmp-mode-btn').forEach(b=>{
+    b.classList.toggle('active',b.dataset.mode===mode);
+  });
+  renderCompare();
+}
+function setCmpPreset(preset){
+  cmpPreset=preset;
+  document.querySelectorAll('.cmp-preset-btn').forEach(b=>{
+    b.classList.toggle('active',b.dataset.preset===preset);
+  });
+  renderCmpTable();
+  renderCmpInsight();
+}
+
+// ── Stat aggregation for compare modes ───────────────────────────────────────
+// Returns stats for a jersey across a set of game indexes
+function getStatsForJersey(jersey,idxs){
+  const keys=['goals','assists','sog','soff','fpa','fpg','dlAtt','dlSuc','drAtt','drSuc','passAtt','passCmp','drops','toUnf','toFrc','gbWon','gbLost','dcWon','dcLost','ct','ints','dodgeOn','dodgeBlk','fouls','yellowCards','clrAtt','clrSuc','fd','saves','goalsAllowed','gso','gsoAllowed'];
+  const agg={};keys.forEach(k=>agg[k]=0);
+  idxs.forEach(i=>{
+    const s=GAMES[i]?.stats[jersey];
+    if(s)keys.forEach(k=>agg[k]+=(s[k]||0));
+  });
+  return agg;
+}
+
+// Returns indexes for "recent" (last up-to-3 games sorted by date ASC, take last 3)
+function getRecentIdxs(){
+  // GAMES is already sorted by date ASC per the loader
+  const total=GAMES.length;
+  if(total<=3)return GAMES.map((_,i)=>i);
+  return [total-3,total-2,total-1];
+}
+function getSeasonIdxs(){return GAMES.map((_,i)=>i);}
+
+// ── Main render ──────────────────────────────────────────────────────────────
+function renderCompare(){
+  renderCmpSlots();
+  const filled=cmpSlots.filter(s=>s!==null);
+  const hasData=filled.length>=1;
+
+  document.getElementById('cmpEmpty').style.display=hasData?'none':'block';
+  document.getElementById('cmpRadarSection').style.display=hasData?'block':'none';
+  document.getElementById('cmpPresetRow').style.display=hasData?'flex':'none';
+  document.getElementById('cmpTableWrap').style.display=hasData?'block':'none';
+  document.getElementById('cmpInsight').style.display=hasData?'block':'none';
+
+  if(!hasData){
+    if(cmpRadarChart){cmpRadarChart.destroy();cmpRadarChart=null;}
+    return;
+  }
+
+  renderCmpRadar();
+  renderCmpTable();
+  renderCmpInsight();
+}
+
+function renderCmpSlots(){
+  const colors=['#f85149','#58a6ff','#e3b341'];
+  cmpSlots.forEach((jersey,i)=>{
+    const el=document.querySelector(`.cmp-slot[data-slot="${i}"]`);
+    if(!el)return;
+    if(jersey===null){
+      el.classList.remove('filled');
+      el.onclick=()=>openCmpPicker(i);
+      el.innerHTML=`<div class="cmp-slot-empty"><strong>+</strong>Add player</div>`;
+    } else {
+      const p=ROSTER.find(r=>r.jersey===jersey);
+      if(!p){cmpSlots[i]=null;return renderCmpSlots();}
+      el.classList.add('filled');
+      el.onclick=null;
+      el.innerHTML=`
+        <button class="cmp-slot-remove" onclick="event.stopPropagation();removeCmpSlot(${i})">×</button>
+        <div class="cmp-slot-player">
+          <div class="cmp-slot-name"><span class="cmp-slot-color-dot" style="background:${colors[i]}"></span>#${p.jersey} ${p.name}</div>
+          <div class="cmp-slot-sub">${posL(p.position)} · Class of ${p.grad_year}</div>
+        </div>`;
+    }
+  });
+}
+
+// ── Radar overlay ────────────────────────────────────────────────────────────
+function renderCmpRadar(){
+  const canvas=document.getElementById('cmpRadarCanvas');
+  if(!canvas)return;
+  if(cmpRadarChart){cmpRadarChart.destroy();cmpRadarChart=null;}
+
+  const filled=cmpSlots.map((j,i)=>({j,i})).filter(o=>o.j!==null);
+  const colors=['#f85149','#58a6ff','#e3b341'];
+
+  // Collect stats for each selected player per mode
+  const activeIdxs=cmpMode==='season'?getSeasonIdxs():getRecentIdxs();
+  const seasonIdxs=getSeasonIdxs();
+
+  const playerData=filled.map(o=>{
+    const recent=getStatsForJersey(o.j,activeIdxs);
+    const season=cmpMode==='delta'?getStatsForJersey(o.j,seasonIdxs):null;
+    return {slotIdx:o.i,jersey:o.j,recent,season};
+  });
+
+  // Union of axes that are meaningful across all selected players
+  const axisDefs=[
+    {label:'Shot %',  check:s=>(s.sog+s.soff)>0,  val:s=>pct(s.goals,s.sog+s.soff)??0},
+    {label:'Pass %',  check:s=>s.passAtt>0,       val:s=>pct(s.passCmp,s.passAtt)??0},
+    {label:'DSR %',   check:s=>(s.dlAtt+s.drAtt)>0,val:s=>pct(s.dlSuc+s.drSuc,s.dlAtt+s.drAtt)??0},
+    {label:'Draw %',  check:s=>(s.dcWon+s.dcLost)>0,val:s=>pct(s.dcWon,s.dcWon+s.dcLost)??0},
+    {label:'DWR %',   check:s=>s.dodgeOn>0,        val:s=>pct(s.dodgeBlk,s.dodgeOn)??0},
+  ];
+  const activeAxes=axisDefs.filter(a=>playerData.some(p=>a.check(p.recent)));
+
+  // Update legend
+  const legend=document.getElementById('cmpRadarLegend');
+  legend.innerHTML=playerData.map(p=>{
+    const roster=ROSTER.find(r=>r.jersey===p.jersey);
+    return `<div class="cmp-legend-item"><span class="cmp-legend-dot" style="background:${colors[p.slotIdx]}"></span>#${p.jersey} ${roster?roster.name.split(' ')[0]:''}</div>`;
+  }).join('');
+
+  if(activeAxes.length<3){
+    // Not enough axes to draw
+    const ctx=canvas.getContext('2d');
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    const wrap=canvas.parentElement;
+    wrap.innerHTML='<div class="cmp-radar-empty">Not enough stat variety across selected players to build a radar. Try selecting players with different roles.</div>';
+    return;
+  } else {
+    // Restore canvas if it was replaced by the empty message
+    const wrap=canvas.parentElement;
+    if(!document.getElementById('cmpRadarCanvas')){
+      wrap.innerHTML='<canvas id="cmpRadarCanvas" height="360"></canvas>';
+    }
+  }
+
+  const labels=activeAxes.map(a=>a.label);
+  const canvasEl=document.getElementById('cmpRadarCanvas');
+
+  // Build datasets — solid for current view; if delta mode, add ghost for season
+  const datasets=[];
+  playerData.forEach(p=>{
+    const color=colors[p.slotIdx];
+    const data=activeAxes.map(a=>a.check(p.recent)?a.val(p.recent):0);
+    datasets.push({
+      label:'#'+p.jersey,
+      data,
+      backgroundColor:color+'22',
+      borderColor:color,
+      borderWidth:1.8,
+      pointBackgroundColor:color,
+      pointRadius:3,
+    });
+    if(cmpMode==='delta'&&p.season){
+      const ghostData=activeAxes.map(a=>a.check(p.season)?a.val(p.season):0);
+      datasets.push({
+        label:'#'+p.jersey+' season',
+        data:ghostData,
+        backgroundColor:'transparent',
+        borderColor:color+'66',
+        borderWidth:1,
+        borderDash:[4,4],
+        pointBackgroundColor:color+'66',
+        pointRadius:2,
+      });
+    }
+  });
+
+  cmpRadarChart=new Chart(canvasEl,{
+    type:'radar',
+    data:{labels,datasets},
+    options:{
+      responsive:true,maintainAspectRatio:true,
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+ctx.raw+'%'}}
+      },
+      scales:{r:{
+        min:0,max:100,
+        ticks:{display:false},
+        grid:{color:'rgba(255,255,255,.08)'},
+        angleLines:{color:'rgba(255,255,255,.08)'},
+        pointLabels:{color:'#8b949e',font:{size:11}}
+      }}
+    }
+  });
+}
+
+// ── Stat table ───────────────────────────────────────────────────────────────
+function getCmpPresetRows(){
+  const presets={
+    shooting:[
+      {label:'Goals',        val:s=>s.goals,                type:'count'},
+      {label:'Shots on goal', val:s=>s.sog,                 type:'count'},
+      {label:'Shots off goal',val:s=>s.soff,                type:'count'},
+      {label:'Shot %',       val:s=>pct(s.goals,s.sog+s.soff), sub:s=>`${s.goals}/${s.sog+s.soff}`,type:'pct'},
+      {label:'GSO created',  val:s=>s.gso,                  type:'count'},
+      {label:'Free pos.',    val:s=>pct(s.fpg,s.fpa),       sub:s=>`${s.fpg}/${s.fpa}`,type:'pct'},
+    ],
+    dodging:[
+      {label:'DSR %',         val:s=>pct(s.dlSuc+s.drSuc,s.dlAtt+s.drAtt),sub:s=>`${s.dlSuc+s.drSuc}/${s.dlAtt+s.drAtt}`,type:'pct'},
+      {label:'Dodges attempted',val:s=>s.dlAtt+s.drAtt,    type:'count'},
+      {label:'Left attempts', val:s=>s.dlAtt,              type:'count'},
+      {label:'Left success',  val:s=>s.dlSuc,              type:'count'},
+      {label:'Right attempts',val:s=>s.drAtt,              type:'count'},
+      {label:'Right success', val:s=>s.drSuc,              type:'count'},
+      {label:'Hand tendency', val:s=>{const d=s.dlAtt+s.drAtt;if(d<3)return '—';const fp=Math.round(Math.max(s.dlAtt,s.drAtt)/d*100);if(s.dlAtt===s.drAtt)return 'Balanced';return (s.dlAtt>s.drAtt?'Left ':'Right ')+fp+'%';},type:'text'},
+    ],
+    defense:[
+      {label:'DWR %',         val:s=>pct(s.dodgeBlk,s.dodgeOn),sub:s=>`${s.dodgeBlk}/${s.dodgeOn}`,type:'pct'},
+      {label:'Dodges blocked',val:s=>s.dodgeBlk,           type:'count'},
+      {label:'Dodged on',     val:s=>s.dodgeOn,            type:'count'},
+      {label:'Caused TOs',    val:s=>s.ct,                 type:'count'},
+      {label:'Interceptions', val:s=>s.ints,               type:'count'},
+      {label:'GBs won',       val:s=>s.gbWon,              type:'count'},
+      {label:'GB missed',     val:s=>s.gbLost,             type:'count',invert:true},
+    ],
+    passing:[
+      {label:'Pass %',        val:s=>pct(s.passCmp,s.passAtt),sub:s=>`${s.passCmp}/${s.passAtt}`,type:'pct'},
+      {label:'Passes completed',val:s=>s.passCmp,          type:'count'},
+      {label:'Assists',       val:s=>s.assists,            type:'count'},
+      {label:'Drops',         val:s=>s.drops,              type:'count',invert:true},
+      {label:'Unforced TO',   val:s=>s.toUnf,              type:'count',invert:true},
+      {label:'Pressured TO',  val:s=>s.toFrc,              type:'count',invert:true},
+      {label:'Ast/TO ratio',  val:s=>{const to=s.toUnf+s.toFrc;return to>0?(s.assists/to):(s.assists>0?s.assists:0);},type:'ratio'},
+    ],
+    discipline:[
+      {label:'Draw %',        val:s=>pct(s.dcWon,s.dcWon+s.dcLost),sub:s=>`${s.dcWon}W ${s.dcLost}L`,type:'pct'},
+      {label:'Draws won',     val:s=>s.dcWon,              type:'count'},
+      {label:'Draws lost',    val:s=>s.dcLost,             type:'count',invert:true},
+      {label:'Fouls committed',val:s=>s.fouls,             type:'count',invert:true},
+      {label:'Fouls drawn',   val:s=>s.fd,                 type:'count'},
+      {label:'Yellow cards',  val:s=>s.yellowCards,        type:'count',invert:true},
+      {label:'Clears',        val:s=>pct(s.clrSuc,s.clrAtt),sub:s=>`${s.clrSuc}/${s.clrAtt}`,type:'pct'},
+    ],
+  };
+  return presets[cmpPreset]||presets.shooting;
+}
+
+function formatCmpValue(v,row){
+  if(v===null||v===undefined)return '—';
+  if(row.type==='pct')return v+'%';
+  if(row.type==='ratio')return (typeof v==='number')?v.toFixed(2):v;
+  if(row.type==='text')return v;
+  return v;
+}
+
+function renderCmpTable(){
+  const filled=cmpSlots.map((j,i)=>({j,i})).filter(o=>o.j!==null);
+  const activeIdxs=cmpMode==='season'?getSeasonIdxs():getRecentIdxs();
+  const seasonIdxs=getSeasonIdxs();
+  const colors=['#f85149','#58a6ff','#e3b341'];
+
+  const playerRows=filled.map(o=>({
+    slotIdx:o.i,
+    jersey:o.j,
+    recent:getStatsForJersey(o.j,activeIdxs),
+    season:cmpMode==='delta'?getStatsForJersey(o.j,seasonIdxs):null,
+  }));
+
+  const rows=getCmpPresetRows();
+  const t=document.getElementById('cmpTable');
+  let html=`<thead><tr><th>Stat</th>${playerRows.map(p=>{
+    const ros=ROSTER.find(r=>r.jersey===p.jersey);
+    return `<th class="col-player" style="color:${colors[p.slotIdx]}">#${p.jersey} ${ros?ros.name.split(' ')[0]:''}</th>`;
+  }).join('')}</tr></thead><tbody>`;
+
+  rows.forEach(r=>{
+    const vals=playerRows.map(p=>{
+      const v=r.val(p.recent);
+      const vs=cmpMode==='delta'&&p.season?r.val(p.season):null;
+      return {v,vs};
+    });
+
+    let bestIdx=-1;
+    if(r.type!=='text'){
+      const numeric=vals.map(v=>(typeof v.v==='number')?v.v:null);
+      const valid=numeric.map((n,i)=>({n,i})).filter(o=>o.n!==null);
+      if(valid.length>=2){
+        const allSame=valid.every(o=>o.n===valid[0].n);
+        if(!allSame){
+          valid.sort((a,b)=>r.invert?(a.n-b.n):(b.n-a.n));
+          bestIdx=valid[0].i;
+        }
+      }
+    }
+
+    html+=`<tr><td>${r.label}</td>`;
+    vals.forEach((vObj,i)=>{
+      const cls=(bestIdx===i)?'col-val top':'col-val';
+      const display=formatCmpValue(vObj.v,r);
+      let sub='';
+      if(r.sub&&cmpMode!=='delta'){
+        try{sub=`<span class="cmp-table-sub">${r.sub(playerRows[i].recent)}</span>`;}catch(e){}
+      }
+      let delta='';
+      if(cmpMode==='delta'&&vObj.vs!==null&&typeof vObj.v==='number'&&typeof vObj.vs==='number'){
+        const diff=vObj.v-vObj.vs;
+        if(Math.abs(diff)>=0.1){
+          const up=diff>0;
+          const good=r.invert?!up:up;
+          const deltaClass=good?'delta-up':'delta-down';
+          const arrow=up?'↑':'↓';
+          const d=r.type==='pct'?Math.round(diff)+'%':(r.type==='ratio'?diff.toFixed(2):Math.round(diff));
+          delta=`<span class="cmp-table-delta ${deltaClass}">${arrow} ${d} vs season</span>`;
+        }
+      }
+      html+=`<td class="${cls}">${display}${sub}${delta}</td>`;
+    });
+    html+=`</tr>`;
+  });
+  html+='</tbody>';
+  t.innerHTML=html;
+}
+
+// ── Auto-insight blurb ───────────────────────────────────────────────────────
+function renderCmpInsight(){
+  const filled=cmpSlots.map((j,i)=>({j,i})).filter(o=>o.j!==null);
+  const body=document.getElementById('cmpInsightBody');
+  if(filled.length<1){body.innerHTML='';return;}
+
+  const activeIdxs=cmpMode==='season'?getSeasonIdxs():getRecentIdxs();
+  const seasonIdxs=getSeasonIdxs();
+  const players=filled.map(o=>{
+    const roster=ROSTER.find(r=>r.jersey===o.j);
+    return {
+      jersey:o.j,
+      name:roster?roster.name.split(' ')[0]:('#'+o.j),
+      pos:roster?posN(roster.position):'',
+      recent:getStatsForJersey(o.j,activeIdxs),
+      season:getStatsForJersey(o.j,seasonIdxs),
+    };
+  });
+
+  const insights=[];
+
+  // Insight 1 — Shooting volume vs efficiency mismatch
+  const shooters=players.filter(p=>(p.recent.sog+p.recent.soff)>=3);
+  if(shooters.length>=2){
+    shooters.forEach(s=>{
+      s.shotPct=pct(s.recent.goals,s.recent.sog+s.recent.soff)||0;
+      s.shotVol=s.recent.sog+s.recent.soff;
+    });
+    const mostVol=[...shooters].sort((a,b)=>b.shotVol-a.shotVol)[0];
+    const mostEff=[...shooters].sort((a,b)=>b.shotPct-a.shotPct)[0];
+    if(mostVol.jersey!==mostEff.jersey&&mostVol.shotPct<mostEff.shotPct-10){
+      insights.push(`<strong>${mostEff.name}</strong> is shooting more efficiently (${mostEff.shotPct}%) than <strong>${mostVol.name}</strong> (${mostVol.shotPct}%) despite fewer attempts. Get ${mostEff.name} more looks.`);
+    }
+  }
+
+  // Insight 2 — Dodging usage vs efficiency
+  const dodgers=players.filter(p=>(p.recent.dlAtt+p.recent.drAtt)>=3);
+  if(dodgers.length>=2){
+    dodgers.forEach(d=>{
+      const dA=d.recent.dlAtt+d.recent.drAtt;
+      d.dsr=pct(d.recent.dlSuc+d.recent.drSuc,dA)||0;
+      d.dVol=dA;
+    });
+    const topDsr=[...dodgers].sort((a,b)=>b.dsr-a.dsr)[0];
+    const topVol=[...dodgers].sort((a,b)=>b.dVol-a.dVol)[0];
+    if(topDsr.jersey!==topVol.jersey&&topDsr.dsr>topVol.dsr+15){
+      insights.push(`<strong>${topDsr.name}</strong> wins dodges at ${topDsr.dsr}% but only has ${topDsr.dVol} attempts; <strong>${topVol.name}</strong> dodges ${topVol.dVol} times at ${topVol.dsr}%. Consider redistributing dodge opportunities.`);
+    }
+  }
+
+  // Insight 3 — Defensive matchup edge (DWR)
+  const defenders=players.filter(p=>p.recent.dodgeOn>=2);
+  if(defenders.length>=2){
+    defenders.forEach(d=>{d.dwr=pct(d.recent.dodgeBlk,d.recent.dodgeOn)||0;});
+    const bestD=[...defenders].sort((a,b)=>b.dwr-a.dwr)[0];
+    const worstD=[...defenders].sort((a,b)=>a.dwr-b.dwr)[0];
+    if(bestD.jersey!==worstD.jersey&&bestD.dwr-worstD.dwr>=20){
+      insights.push(`<strong>${bestD.name}</strong> holds a DWR edge (${bestD.dwr}% vs ${worstD.name}'s ${worstD.dwr}%). Put ${bestD.name} on the toughest matchup.`);
+    }
+  }
+
+  // Insight 4 — Draw specialist
+  const drawers=players.filter(p=>(p.recent.dcWon+p.recent.dcLost)>=3);
+  if(drawers.length>=1){
+    drawers.forEach(d=>{d.dp=pct(d.recent.dcWon,d.recent.dcWon+d.recent.dcLost)||0;});
+    const topDraw=[...drawers].sort((a,b)=>b.dp-a.dp)[0];
+    if(topDraw.dp>=65){
+      insights.push(`<strong>${topDraw.name}</strong> is winning draws at ${topDraw.dp}% — keep her on the circle regardless of position.`);
+    }
+  }
+
+  // Insight 5 — Form vs season deltas (only in delta mode)
+  if(cmpMode==='delta'){
+    players.forEach(p=>{
+      const rShot=pct(p.recent.goals,p.recent.sog+p.recent.soff);
+      const sShot=pct(p.season.goals,p.season.sog+p.season.soff);
+      if(rShot!==null&&sShot!==null&&(p.recent.sog+p.recent.soff)>=3&&(p.season.sog+p.season.soff)>=6){
+        const diff=rShot-sShot;
+        if(diff>=12)insights.push(`<strong>${p.name}</strong> is HOT — shooting ${rShot}% recently vs ${sShot}% season average. Feed her.`);
+        else if(diff<=-12)insights.push(`<strong>${p.name}</strong> is in a slump — ${rShot}% recent vs ${sShot}% season. Check film, look for defensive adjustments against her.`);
+      }
+    });
+  }
+
+  // Insight 6 — Passing hub
+  const passers=players.filter(p=>p.recent.passAtt>=8);
+  if(passers.length>=1){
+    passers.forEach(p=>{p.pp=pct(p.recent.passCmp,p.recent.passAtt)||0;});
+    const topP=[...passers].sort((a,b)=>b.pp-a.pp)[0];
+    if(topP.pp>=88&&topP.recent.assists>=2){
+      insights.push(`<strong>${topP.name}</strong> is a reliable passing hub (${topP.pp}%, ${topP.recent.assists} assists). Design more plays through her.`);
+    }
+  }
+
+  // Insight 7 — Role clarity for single-player view
+  if(players.length===1){
+    const p=players[0];
+    const evts=(p.recent.goals||0)+(p.recent.assists||0)+(p.recent.gbWon||0)+(p.recent.ct||0)+((p.recent.dlAtt+p.recent.drAtt)||0);
+    if(evts<3)insights.push(`Not enough data yet for <strong>${p.name}</strong> in this view — add more games or switch to Season totals.`);
+  }
+
+  // Fallback when no specific insight triggered
+  if(!insights.length){
+    if(players.length===1){
+      insights.push(`<strong>${players[0].name}</strong> — pick another player in the slots above to see comparative insights.`);
+    } else {
+      insights.push(`Stat profiles for these players are similar across the key metrics. Switch mode or preset to dig deeper, or pick different roles to contrast.`);
+    }
+  }
+
+  body.innerHTML=insights.slice(0,3).map(i=>'<div style="margin-bottom:8px;">'+i+'</div>').join('');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SHOT ENTRY — UI LOGIC
+// ═══════════════════════════════════════════════════════════════════════════
+
+async function openShotEntry(){
+  const v=document.getElementById('gameSelect').value;
+  if(v==='season'){toast('Select a specific game first','error');return;}
+  const game=GAMES[parseInt(v)];
+  if(!game){toast('Game not found','error');return;}
+
+  seGameId=game.id;
+  seShots=[];
+  seResetCurrent();
+  seTeam='us';
+  seOppHand=game.opp_goalie_hand||'';
+
+  // Set subtitle
+  document.getElementById('seSubtitle').textContent=`${game.opponent} · ${game.date}`;
+
+  // Populate goalie dropdown (our roster goalies)
+  const goalieSel=document.getElementById('seOurGoalie');
+  const goalies=ROSTER.filter(p=>posN(p.position)==='G');
+  goalieSel.innerHTML='<option value="">— select —</option>'+goalies.map(g=>`<option value="${g.jersey}">#${g.jersey} ${g.name}</option>`).join('');
+  // If game already has our_goalies metadata, prefill
+  if(game.our_goalies&&game.our_goalies.length>0){
+    seOurGoalie=game.our_goalies[0].jersey;
+    goalieSel.value=seOurGoalie;
+  } else {
+    seOurGoalie=null;
+  }
+
+  // Populate assist-by dropdown (non-shooter teammates)
+  refreshSeAssistOptions();
+
+  // Set opp hand selector
+  document.getElementById('seOppHand').value=seOppHand;
+
+  // Open overlay and load existing shots
+  document.getElementById('shotEntryBg').classList.add('open');
+  document.addEventListener('keydown',seKeyHandler);
+
+  // Load existing shots for this game
+  const existing=await fetchShotsForGame(seGameId);
+  seShots=existing||[];
+  renderSeLog();
+  renderSeCounts();
+}
+
+function closeShotEntry(){
+  document.getElementById('shotEntryBg').classList.remove('open');
+  document.removeEventListener('keydown',seKeyHandler);
+  seGameId=null;
+  seShots=[];
+  seResetCurrent();
+  refresh(); // reload GAMES so scoreboard reflects any saves
+}
+
+function seResetCurrent(){
+  seCurrent={
+    team:seTeam||'us',
+    jersey:seCurrent.jersey,  // sticky: keep last player
+    fieldX:null,fieldY:null,
+    result:null,netZone:null,
+    shotType:seCurrent.shotType||null,  // sticky: keep last type
+    assistedBy:null,
+    quarter:parseInt(document.getElementById('seQuarter')?.value||'1')
+  };
+
+  // Reset visual state
+  const dot=document.getElementById('seFieldDot');if(dot)dot.style.display='none';
+  document.querySelectorAll('.se-result-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.se-net-zone,.se-net-outer-zone').forEach(z=>{z.classList.remove('active');z.classList.remove('save-color');z.classList.remove('pipe-color');});
+  // But don't reset shot type buttons — sticky
+  document.getElementById('seAssistRow').style.display='none';
+
+  // Reset inner/outer net zone availability
+  refreshNetZoneAvailability();
+  refreshLogButton();
+}
+
+function setShotTeam(t){
+  seTeam=t;
+  seCurrent.team=t;
+  // When opponent is shooting, the shooter selector becomes "Opponent #?" — simplified: just pick "opponent" as shooter (no specific jersey)
+  // For opp shots, we store jersey=null, team='opp', and goalie_jersey = our in-net goalie
+  if(t==='opp'){
+    document.getElementById('sePlayerNum').textContent='OPP';
+    document.getElementById('sePlayerName').textContent='Opponent (any shooter)';
+    document.getElementById('sePlayerCurrent').classList.remove('empty');
+    seCurrent.jersey=null;
+  } else {
+    if(!seCurrent.jersey){
+      document.getElementById('sePlayerNum').textContent='—';
+      document.getElementById('sePlayerName').textContent='Pick a shooter';
+      document.getElementById('sePlayerCurrent').classList.add('empty');
+    }
+  }
+  refreshLogButton();
+}
+
+function setOppHand(h){seOppHand=h;}
+
+function openSePicker(){
+  if(seTeam==='opp')return; // no picker needed for opp shots
+  document.getElementById('sePickerBg').classList.add('open');
+  renderSePickerList();
+}
+function closeSePicker(){document.getElementById('sePickerBg').classList.remove('open');}
+
+function renderSePickerList(){
+  const list=document.getElementById('sePickerList');
+  const nonGoalies=ROSTER.filter(p=>posN(p.position)!=='G');
+  const goalies=ROSTER.filter(p=>posN(p.position)==='G');
+  const order=[...nonGoalies,...goalies];
+  list.innerHTML=order.map(p=>`<div class="se-picker-item" onclick="pickSePlayer(${p.jersey})">
+    <span class="se-player-num">#${p.jersey}</span>
+    <span class="se-player-name">${p.name}</span>
+    <span style="color:#484f58;font-size:10px;font-weight:600;text-transform:uppercase;">${posL(p.position)}</span>
+  </div>`).join('');
+}
+
+function pickSePlayer(jersey){
+  seCurrent.jersey=jersey;
+  const p=ROSTER.find(r=>r.jersey===jersey);
+  document.getElementById('sePlayerNum').textContent='#'+jersey;
+  document.getElementById('sePlayerName').textContent=p?p.name:'';
+  document.getElementById('sePlayerCurrent').classList.remove('empty');
+  closeSePicker();
+  refreshSeAssistOptions();
+  refreshLogButton();
+}
+
+function refreshSeAssistOptions(){
+  const sel=document.getElementById('seAssistSelect');
+  if(!sel)return;
+  const others=ROSTER.filter(p=>p.jersey!==seCurrent.jersey);
+  sel.innerHTML='<option value="">Unassisted</option>'+others.map(p=>`<option value="${p.jersey}">#${p.jersey} ${p.name.split(' ')[0]}</option>`).join('');
+}
+
+function onFieldTap(e){
+  const wrap=document.getElementById('seFieldWrap');
+  const rect=wrap.getBoundingClientRect();
+  const x=(e.clientX-rect.left)/rect.width;
+  const y=(e.clientY-rect.top)/rect.height;
+  seCurrent.fieldX=Math.max(0,Math.min(1,x));
+  seCurrent.fieldY=Math.max(0,Math.min(1,y));
+  const dot=document.getElementById('seFieldDot');
+  dot.style.left=(seCurrent.fieldX*100)+'%';
+  dot.style.top=(seCurrent.fieldY*100)+'%';
+  dot.style.background=shotColorForResult(seCurrent.result||'goal');
+  dot.style.display='block';
+  refreshLogButton();
+}
+
+function setShotResult(r){
+  seCurrent.result=r;
+  document.querySelectorAll('.se-result-btn').forEach(b=>{
+    b.classList.toggle('active',b.dataset.result===r);
+  });
+  // Update net zone availability (miss wide disables inner, shows outer)
+  refreshNetZoneAvailability();
+  // Refresh the field dot color
+  const dot=document.getElementById('seFieldDot');
+  if(dot&&seCurrent.fieldX!==null)dot.style.background=shotColorForResult(r);
+  // Show assist row only for goals
+  document.getElementById('seAssistRow').style.display=(r==='goal'&&seTeam==='us')?'flex':'none';
+  refreshLogButton();
+}
+
+function refreshNetZoneAvailability(){
+  const innerZones=document.querySelectorAll('.se-net-zone');
+  const outerZones=document.querySelectorAll('.se-net-outer-zone');
+  const r=seCurrent.result;
+  if(r==='miss'){
+    // Only outer zones allowed
+    innerZones.forEach(z=>z.classList.add('disabled'));
+    outerZones.forEach(z=>z.classList.remove('disabled'));
+  } else if(r==='goal'||r==='save'||r==='pipe'){
+    // Only inner zones allowed
+    innerZones.forEach(z=>z.classList.remove('disabled'));
+    outerZones.forEach(z=>z.classList.add('disabled'));
+  } else {
+    // No result yet — allow all
+    innerZones.forEach(z=>z.classList.remove('disabled'));
+    outerZones.forEach(z=>z.classList.remove('disabled'));
+  }
+  // Apply color class hint to inner zones based on result
+  innerZones.forEach(z=>{z.classList.remove('save-color','pipe-color');});
+  if(r==='save')innerZones.forEach(z=>z.classList.add('save-color'));
+  else if(r==='pipe')innerZones.forEach(z=>z.classList.add('pipe-color'));
+}
+
+function setNetZone(z){
+  // Reject if zone is disabled
+  const el=document.querySelector(`[data-zone="${z}"]`);
+  if(!el||el.classList.contains('disabled'))return;
+  seCurrent.netZone=z;
+  document.querySelectorAll('.se-net-zone,.se-net-outer-zone').forEach(zone=>zone.classList.remove('active'));
+  if(el)el.classList.add('active');
+  refreshLogButton();
+}
+
+function setShotType(t){
+  seCurrent.shotType=(seCurrent.shotType===t)?null:t;
+  document.querySelectorAll('.se-type-btn').forEach(b=>{
+    b.classList.toggle('active',seCurrent.shotType===b.dataset.type);
+  });
+}
+
+function shotColorForResult(r){
+  return r==='goal'?'#3fb950':r==='save'?'#e3b341':r==='pipe'?'#8b949e':'#f85149';
+}
+
+function refreshLogButton(){
+  const btn=document.getElementById('seLogBtn');
+  if(!btn)return;
+  // Requirements to log:
+  //  - field location set
+  //  - result set
+  //  - for goal/save/pipe: net zone set (inner)
+  //  - for miss: net zone set (outer)
+  //  - for our team shots: jersey picked
+  //  - opponent goalie hand recommended but not required
+  let ok=true;
+  if(seCurrent.fieldX===null||seCurrent.fieldY===null)ok=false;
+  if(!seCurrent.result)ok=false;
+  if(!seCurrent.netZone)ok=false;
+  if(seTeam==='us'&&!seCurrent.jersey)ok=false;
+  btn.disabled=!ok;
+}
+
+// ── Log / undo / delete shots ────────────────────────────────────────────────
+async function logShot(){
+  if(document.getElementById('seLogBtn').disabled)return;
+
+  const qsel=document.getElementById('seQuarter');
+  seCurrent.quarter=parseInt(qsel.value)||1;
+
+  const assistSel=document.getElementById('seAssistSelect');
+  if(seCurrent.result==='goal'&&seTeam==='us'&&assistSel&&assistSel.value){
+    seCurrent.assistedBy=parseInt(assistSel.value);
+  } else {
+    seCurrent.assistedBy=null;
+  }
+
+  // Capture goalie info based on team
+  const goalieSel=document.getElementById('seOurGoalie');
+  const ourGoalieJersey=goalieSel.value?parseInt(goalieSel.value):null;
+  seOurGoalie=ourGoalieJersey;
+
+  const shotPayload={
+    game_id:seGameId,
+    team:seTeam,
+    jersey:seTeam==='us'?seCurrent.jersey:null,
+    goalie_jersey:seTeam==='opp'?ourGoalieJersey:null,
+    opponent_goalie_hand:seTeam==='us'?(seOppHand||null):null,
+    field_x:seCurrent.fieldX,
+    field_y:seCurrent.fieldY,
+    net_zone:seCurrent.netZone,
+    result:seCurrent.result,
+    shot_type:seCurrent.shotType,
+    assisted_by:seCurrent.assistedBy,
+    quarter:seCurrent.quarter,
+  };
+
+  const saved=await saveShotToDb(shotPayload);
+  if(!saved)return;
+
+  seShots.push(saved);
+  renderSeLog();
+  renderSeCounts();
+
+  // Save game metadata (goalie + opp hand) if not yet persisted on this game
+  const gameIdx=GAMES.findIndex(g=>g.id===seGameId);
+  if(gameIdx>=0){
+    const g=GAMES[gameIdx];
+    const meta=[];
+    if(ourGoalieJersey)meta.push({jersey:ourGoalieJersey,quarters:[1,2,3,4]});
+    // Debounce the PATCH so we don't hammer the DB
+    clearTimeout(seSaveDebounce);
+    seSaveDebounce=setTimeout(()=>{
+      saveGameGoalieMeta(seGameId,meta,seOppHand);
+    },600);
+  }
+
+  toast('Shot logged','success');
+  seResetCurrent();
+}
+
+async function undoLastShot(){
+  if(!seShots.length){toast('No shots to undo','error');return;}
+  const last=seShots[seShots.length-1];
+  const ok=await deleteShotFromDb(last.id);
+  if(!ok)return;
+  seShots.pop();
+  renderSeLog();
+  renderSeCounts();
+  toast('Undone','success');
+}
+
+async function deleteShot(shotId){
+  const idx=seShots.findIndex(s=>s.id===shotId);
+  if(idx<0)return;
+  const ok=await deleteShotFromDb(shotId);
+  if(!ok)return;
+  seShots.splice(idx,1);
+  renderSeLog();
+  renderSeCounts();
+}
+
+// ── Keyboard shortcuts ───────────────────────────────────────────────────────
+function seKeyHandler(e){
+  if(!document.getElementById('shotEntryBg').classList.contains('open'))return;
+  // Ignore if user is typing in an input/select
+  const tag=(e.target.tagName||'').toLowerCase();
+  if(tag==='input'||tag==='select'||tag==='textarea')return;
+  const k=e.key.toLowerCase();
+  if(k==='g'){setShotResult('goal');e.preventDefault();}
+  else if(k==='s'){setShotResult('save');e.preventDefault();}
+  else if(k==='m'){setShotResult('miss');e.preventDefault();}
+  else if(k==='p'){setShotResult('pipe');e.preventDefault();}
+  else if(k==='enter'&&!document.getElementById('seLogBtn').disabled){logShot();e.preventDefault();}
+  else if((e.ctrlKey||e.metaKey)&&k==='z'){undoLastShot();e.preventDefault();}
+  else if(k==='escape'){
+    // Only close picker if open; otherwise let native escape work
+    const picker=document.getElementById('sePickerBg');
+    if(picker.classList.contains('open')){closeSePicker();e.preventDefault();}
+  }
+}
+
+// ── Render: shot log table ───────────────────────────────────────────────────
+function renderSeLog(){
+  const tbody=document.getElementById('seLogBody');
+  const cnt=document.getElementById('seLogCount');
+  if(!tbody)return;
+  if(!seShots.length){
+    tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:#484f58;padding:16px;">No shots logged yet</td></tr>';
+    if(cnt)cnt.textContent='0 shots';
+    return;
+  }
+  tbody.innerHTML=seShots.map((s,i)=>{
+    const p=s.team==='us'&&s.jersey?ROSTER.find(r=>r.jersey===s.jersey):null;
+    const playerLabel=s.team==='opp'?'Opp':(p?`#${s.jersey} ${p.name.split(' ')[0]}`:('#'+s.jersey));
+    const typeLabel=s.shot_type==='dodge'?'Dodge':s.shot_type==='catch_shoot'?'C&S':s.shot_type==='free_pos'?'FP':'—';
+    const resultLabel=s.result.charAt(0).toUpperCase()+s.result.slice(1);
+    return `<tr>
+      <td style="color:#484f58;">${i+1}</td>
+      <td>${playerLabel}</td>
+      <td><span class="se-log-dot ${s.result}"></span>${resultLabel}${s.net_zone?' ('+s.net_zone+')':''}</td>
+      <td style="color:#8b949e;">${typeLabel}</td>
+      <td style="color:#8b949e;">Q${s.quarter||1}</td>
+      <td style="text-align:right;"><button class="se-log-del" onclick="deleteShot('${s.id}')">×</button></td>
+    </tr>`;
+  }).join('');
+  if(cnt)cnt.textContent=seShots.length+(seShots.length===1?' shot':' shots');
+}
+
+function renderSeCounts(){
+  const g=seShots.filter(s=>s.result==='goal').length;
+  const sv=seShots.filter(s=>s.result==='save').length;
+  const m=seShots.filter(s=>s.result==='miss'||s.result==='pipe').length;
+  const c=document.getElementById('seCount');
+  const gg=document.getElementById('seGoals');
+  const ss=document.getElementById('seSaves');
+  const mm=document.getElementById('seMisses');
+  if(c)c.textContent=seShots.length;
+  if(gg)gg.textContent=g;
+  if(ss)ss.textContent=sv;
+  if(mm)mm.textContent=m;
+}
+
 function toggleGlossary(){
   const c=document.getElementById('glossContent'),a=document.getElementById('glossArrow');
   const o=c.classList.toggle('open');
