@@ -370,15 +370,33 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#0d1117;color:#e6edf3;mi
 .ctrl-btn.orange{color:#8b949e}.ctrl-btn.orange:hover{border-color:#f0883e;color:#f0883e}
 .ctrl-btn.red{color:#8b949e}.ctrl-btn.red:hover{border-color:#f85149;color:#f85149}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;padding:20px 24px}
-.card{background:#161b22;border:1px solid #21262d;border-radius:14px;overflow:hidden;transition:border-color .18s,transform .15s}
+.card{background:#161b22;border:1px solid #21262d;border-radius:14px;overflow:hidden;transition:border-color .18s,transform .15s;position:relative;}
 .card:hover{border-color:#30363d;transform:translateY(-2px)}
 .card.expanded{border-color:#58a6ff}
-.card-header{padding:14px 16px 10px;display:flex;align-items:flex-start;gap:12px}
+.card-header{padding:14px 16px 10px;display:flex;align-items:flex-start;gap:12px;position:relative;z-index:2;}
 .avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;margin-top:2px}
 .av-A{background:#3a1a00;color:#ff8c00}.av-M{background:#1a3a1a;color:#3fb950}
 .av-D{background:#001a3a;color:#58a6ff}.av-G{background:#2a003a;color:#d2a8ff}
-.card-name{font-size:14px;font-weight:700}
-.card-sub{font-size:11px;color:#8b949e;margin-top:2px}
+.card-name{font-size:17px;font-weight:700;line-height:1.15;}
+.card-sub{font-size:11px;color:#8b949e;margin-top:3px}
+
+/* Jersey number watermark — big faded number behind card content */
+.jersey-watermark{
+  position:absolute;top:-8px;right:6px;
+  font-family:'Bebas Neue','Arial Black',sans-serif;
+  font-size:90px;font-weight:900;
+  line-height:1;letter-spacing:-0.04em;
+  pointer-events:none;user-select:none;
+  z-index:0;
+  color:rgba(255,255,255,0.035);
+}
+.jersey-watermark.wm-A{color:rgba(255,140,0,0.06);}
+.jersey-watermark.wm-M{color:rgba(63,185,80,0.06);}
+.jersey-watermark.wm-D{color:rgba(88,166,255,0.06);}
+.jersey-watermark.wm-G{color:rgba(210,168,255,0.06);}
+
+/* Make sure content layers sit above the watermark */
+.blurb,.radar-wrap,.stat-strip,.pct-section,.dodge-section,.mini-shot,.expand-btn,.full-detail,.goalie-strip{position:relative;z-index:2;}
 .pos-pill{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;margin-left:6px;vertical-align:middle}
 .pill-A{background:#3a1a00;color:#ff8c00}.pill-M{background:#1a3a1a;color:#3fb950}
 .pill-D{background:#001a3a;color:#58a6ff}.pill-G{background:#2a003a;color:#d2a8ff}
@@ -1696,19 +1714,17 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#0d1117;color:#e6edf3;mi
           <!-- Restraining line (top) -->
           <line x1="0" y1="60" x2="300" y2="60" stroke="#fff" stroke-width="1.5" opacity="0.7"/>
           <text x="150" y="54" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="10" font-family="Arial">RESTRAINING LINE</text>
-           <!-- 12m fan -->
-          <path d="M 10 340 A 140 140 0 0 1 290 340" stroke="#fff" stroke-width="1.5" fill="none" opacity="0.55"/>
-          <text x="150" y="215" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="11" font-weight="600" font-family="Arial">12m</text>
+          <!-- 12m fan -->
+          <path d="M 100 370 A 60 60 0 0 1 200 370" stroke="#fff" stroke-width="1" fill="none" opacity="0.5"/>
+          <text x="150" y="315" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="9" font-family="Arial">12m</text>
           <!-- 8m arc -->
-          <path d="M 65 340 A 85 85 0 0 1 235 340" stroke="#fff" stroke-width="1.5" fill="none" opacity="0.55"/>
-          <text x="150" y="270" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="11" font-weight="600" font-family="Arial">8m</text>
+          <path d="M 120 370 A 35 35 0 0 1 180 370" stroke="#fff" stroke-width="1" fill="none" opacity="0.5"/>
+          <text x="150" y="345" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="9" font-family="Arial">8m</text>
           <!-- Crease -->
-          <ellipse cx="150" cy="340" rx="55" ry="32" stroke="#fff" stroke-width="1.5" fill="rgba(255,255,255,0.03)" opacity="0.7"/>
-          <!-- Goal line (extended) -->
-          <line x1="50" y1="340" x2="250" y2="340" stroke="#fff" stroke-width="1.2" opacity="0.6"/>
-          <!-- Goal (cage) — much larger and visually distinct -->
-          <rect x="120" y="332" width="60" height="12" fill="rgba(200,150,12,0.25)" stroke="#c8960c" stroke-width="2.5" opacity="1"/>
-          <text x="150" y="342" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="9" font-weight="700" font-family="Arial" letter-spacing="1">GOAL</text>
+          <ellipse cx="150" cy="370" rx="22" ry="14" stroke="#fff" stroke-width="1" fill="none" opacity="0.6"/>
+          <!-- Goal line -->
+          <line x1="120" y1="370" x2="180" y2="370" stroke="#fff" stroke-width="1" opacity="0.7"/>
+          <!-- Goal (cage) -->
           <rect x="142" y="368" width="16" height="4" fill="none" stroke="#fff" stroke-width="1.5" opacity="0.9"/>
           <!-- Sidelines -->
           <line x1="1" y1="0" x2="1" y2="400" stroke="#fff" stroke-width="1" opacity="0.6"/>
@@ -2425,9 +2441,97 @@ function getBlurb(player,s){
   if(s.drops>=3&&!lines.some(l=>l.includes('pass')))lines.push(`${s.drops} drops — hands under pressure.`);
   if((s.sog+s.soff)>=4&&sp!==null&&sp<25)lines.push(`Cold shooting day (${sp}%).`);
 
+  // ── Shot-data insights (appended if SHOTS exist for this player) ──
+  if(typeof SHOTS!=='undefined'&&SHOTS&&SHOTS.length>0){
+    const playerShots=pos==='G'
+      ? SHOTS.filter(sh=>sh.team==='opp'&&sh.goalie_jersey===player.jersey)
+      : SHOTS.filter(sh=>sh.team==='us'&&sh.jersey===player.jersey);
+    if(playerShots.length>=3){
+      const shotLines=buildShotInsights(playerShots,pos);
+      shotLines.forEach(l=>lines.push(l));
+    }
+  }
+
   if(!lines.length)return{blurb:null,nba:null};
-  // Keep blurb readable — take top 3 prioritized lines
-  return{blurb:lines.slice(0,3).join(' '),nba};
+  // Keep blurb readable — take top 4 lines now that shot data can add more
+  return{blurb:lines.slice(0,4).join(' '),nba};
+}
+
+// Helper: generate shot-data insight lines for blurbs
+function buildShotInsights(shots,pos){
+  const lines=[];
+  const n=shots.length;
+
+  if(pos==='G'){
+    // Goalie: analyze where opponents scored vs where saved
+    const zones={};
+    shots.forEach(s=>{if(s.net_zone){if(!zones[s.net_zone])zones[s.net_zone]={g:0,sv:0,t:0};zones[s.net_zone].t++;if(s.result==='goal')zones[s.net_zone].g++;else if(s.result==='save')zones[s.net_zone].sv++;}});
+    const withData=Object.entries(zones).filter(([z,d])=>d.t>=2);
+    if(withData.length>=2){
+      const withSavePct=withData.map(([z,d])=>({z,pct:Math.round(d.sv/d.t*100),t:d.t}));
+      const strong=[...withSavePct].sort((a,b)=>b.pct-a.pct)[0];
+      const weak=[...withSavePct].sort((a,b)=>a.pct-b.pct)[0];
+      if(strong.z!==weak.z&&strong.pct-weak.pct>=30){
+        lines.push(`Strong on ${strong.z} (${strong.pct}% save), exposed on ${weak.z} (${weak.pct}%).`);
+      }
+    }
+    // Shot distance
+    const close=shots.filter(s=>s.field_y!==null&&s.field_y>0.78);
+    if(close.length>=3){
+      const closeGoals=close.filter(s=>s.result==='goal').length;
+      const closePct=Math.round(closeGoals/close.length*100);
+      lines.push(`Opponents score ${closePct}% from inside the 8m (${closeGoals}/${close.length}).`);
+    }
+    return lines;
+  }
+
+  // Non-goalie: shot location + zone + handedness insights
+  const close=shots.filter(s=>s.field_y!==null&&s.field_y>0.78);
+  const mid=shots.filter(s=>s.field_y!==null&&s.field_y>0.55&&s.field_y<=0.78);
+  const far=shots.filter(s=>s.field_y!==null&&s.field_y<=0.55);
+
+  const pctOf=arr=>{const g=arr.filter(s=>s.result==='goal').length;return arr.length>0?{g,t:arr.length,p:Math.round(g/arr.length*100)}:null;};
+
+  // Compare zones — find standout zone
+  const zoneResults=[{lbl:'inside 8m',d:pctOf(close)},{lbl:'8-12m',d:pctOf(mid)},{lbl:'above 12m',d:pctOf(far)}].filter(o=>o.d&&o.d.t>=2);
+  if(zoneResults.length>=2){
+    const strongest=[...zoneResults].sort((a,b)=>b.d.p-a.d.p)[0];
+    const weakest=[...zoneResults].sort((a,b)=>a.d.p-b.d.p)[0];
+    if(strongest.lbl!==weakest.lbl&&strongest.d.p-weakest.d.p>=25){
+      lines.push(`Deadly from ${strongest.lbl} (${strongest.d.p}%, ${strongest.d.g}/${strongest.d.t}), struggles ${weakest.lbl} (${weakest.d.p}%).`);
+    } else if(strongest.d.p>=55&&strongest.d.t>=3){
+      lines.push(`Finishes ${strongest.d.p}% from ${strongest.lbl} (${strongest.d.g}/${strongest.d.t}).`);
+    }
+  }
+
+  // Net zone tendency — does she favor a placement corner?
+  const zones={};
+  shots.filter(s=>s.result==='goal'&&s.net_zone&&s.net_zone.length===2).forEach(s=>{
+    zones[s.net_zone]=(zones[s.net_zone]||0)+1;
+  });
+  const zEntries=Object.entries(zones);
+  const totalGoals=shots.filter(s=>s.result==='goal').length;
+  if(totalGoals>=4&&zEntries.length>0){
+    const top=zEntries.sort((a,b)=>b[1]-a[1])[0];
+    const topPct=Math.round(top[1]/totalGoals*100);
+    if(topPct>=40){
+      lines.push(`Places ${topPct}% of goals ${top[0]} (${top[1]} of ${totalGoals}).`);
+    }
+  }
+
+  // Handedness matchup
+  const vsR=shots.filter(s=>s.opponent_goalie_hand==='R');
+  const vsL=shots.filter(s=>s.opponent_goalie_hand==='L');
+  if(vsR.length>=3&&vsL.length>=3){
+    const pctR=Math.round(vsR.filter(s=>s.result==='goal').length/vsR.length*100);
+    const pctL=Math.round(vsL.filter(s=>s.result==='goal').length/vsL.length*100);
+    if(Math.abs(pctR-pctL)>=15){
+      const better=pctR>pctL?'R':'L';
+      lines.push(`Hotter vs ${better}-handed goalies (${Math.max(pctR,pctL)}% vs ${Math.min(pctR,pctL)}%).`);
+    }
+  }
+
+  return lines;
 }
 
 // ── RENDER ────────────────────────────────────────────────────────────────────
@@ -2510,7 +2614,7 @@ function buildCard(player,all){
     <div class="fd-row"><span class="fd-lbl">GSO allowed</span><span class="fd-val">${s.gsoAllowed}</span></div>`:''}
   </div>
 </div>`;
-  return `<div class="card" data-pos="${pos}" data-jersey="${player.jersey}" id="card_${player.jersey}"><div class="card-header"><div class="avatar av-${pos}">${ini(player.name)}</div><div><div class="card-name">#${player.jersey} ${player.name}<span class="pos-pill pill-${pos}">${posL(player.position)}</span></div><div class="card-sub">Class of ${player.grad_year} · ${player.hand}-handed</div></div></div>${blurb?`<div class="blurb"><div class="blurb-text">${blurb}</div>${nba?`<div class="nba-comp">NBA comp: <span>${nba}</span></div>`:''}</div>`:''}<div class="radar-wrap"><canvas id="radar_${player.jersey}" height="170"></canvas></div>${strip}${bars}${dodge}${buildMiniShotPreview(player.jersey,isG)}<button class="expand-btn" id="expBtn_${player.jersey}" onclick="toggleDetail(event,${player.jersey})">All stats ▾</button><div class="full-detail" id="det_${player.jersey}">${fd}<div style="margin-top:14px;padding-top:12px;border-top:1px solid #21262d;text-align:center;"><button class="ctrl-btn green" style="padding:8px 16px;font-size:12px;" onclick="jumpToCompareWith(${player.jersey})">Compare with others ⇢</button></div></div></div>`;
+  return `<div class="card" data-pos="${pos}" data-jersey="${player.jersey}" id="card_${player.jersey}"><div class="jersey-watermark wm-${pos}">${player.jersey}</div><div class="card-header"><div class="avatar av-${pos}">${ini(player.name)}</div><div><div class="card-name">${player.name}<span class="pos-pill pill-${pos}">${posL(player.position)}</span></div><div class="card-sub">Class of ${player.grad_year} · ${player.hand}-handed</div></div></div>${blurb?`<div class="blurb"><div class="blurb-text">${blurb}</div>${nba?`<div class="nba-comp">NBA comp: <span>${nba}</span></div>`:''}</div>`:''}<div class="radar-wrap"><canvas id="radar_${player.jersey}" height="170"></canvas></div>${strip}${bars}${dodge}${buildMiniShotPreview(player.jersey,isG)}<button class="expand-btn" id="expBtn_${player.jersey}" onclick="toggleDetail(event,${player.jersey})">All stats ▾</button><div class="full-detail" id="det_${player.jersey}">${fd}<div style="margin-top:14px;padding-top:12px;border-top:1px solid #21262d;text-align:center;"><button class="ctrl-btn green" style="padding:8px 16px;font-size:12px;" onclick="jumpToCompareWith(${player.jersey})">Compare with others ⇢</button></div></div></div>`;
 }
 
 function drawRadar(player,all){
@@ -3049,6 +3153,52 @@ function renderCmpInsight(){
     const p=players[0];
     const evts=(p.recent.goals||0)+(p.recent.assists||0)+(p.recent.gbWon||0)+(p.recent.ct||0)+((p.recent.dlAtt+p.recent.drAtt)||0);
     if(evts<3)insights.push(`Not enough data yet for <strong>${p.name}</strong> in this view — add more games or switch to Season totals.`);
+  }
+
+  // Insight 8 — Shot location contrast (requires SHOTS data)
+  if(typeof SHOTS!=='undefined'&&SHOTS&&SHOTS.length>0&&players.length>=2){
+    const playerShotProfiles=players.map(p=>{
+      const shots=SHOTS.filter(sh=>sh.team==='us'&&sh.jersey===p.jersey);
+      if(shots.length<3)return null;
+      const close=shots.filter(s=>s.field_y!==null&&s.field_y>0.78);
+      const far=shots.filter(s=>s.field_y!==null&&s.field_y<=0.55);
+      const leftSide=shots.filter(s=>s.field_x!==null&&s.field_x<0.4).length;
+      const rightSide=shots.filter(s=>s.field_x!==null&&s.field_x>0.6).length;
+      return {
+        name:p.name,jersey:p.jersey,
+        total:shots.length,
+        close:close.length,closePct:close.length?Math.round(close.filter(s=>s.result==='goal').length/close.length*100):null,
+        far:far.length,farPct:far.length?Math.round(far.filter(s=>s.result==='goal').length/far.length*100):null,
+        leftPct:Math.round(leftSide/shots.length*100),
+        rightPct:Math.round(rightSide/shots.length*100),
+      };
+    }).filter(p=>p!==null);
+
+    if(playerShotProfiles.length>=2){
+      // Contrast: who shoots from where
+      const closeShooter=[...playerShotProfiles].sort((a,b)=>b.close-a.close)[0];
+      const farShooter=[...playerShotProfiles].sort((a,b)=>b.far-a.far)[0];
+      if(closeShooter.jersey!==farShooter.jersey&&closeShooter.close>=3&&farShooter.far>=3){
+        insights.push(`<strong>${closeShooter.name}</strong> attacks inside (${closeShooter.close} close-range shots); <strong>${farShooter.name}</strong> works the outside (${farShooter.far} from above 12m). Different threats, different spacing.`);
+      }
+
+      // Lateral tendencies
+      const leftHeavy=playerShotProfiles.find(p=>p.leftPct>=55);
+      const rightHeavy=playerShotProfiles.find(p=>p.rightPct>=55&&(!leftHeavy||p.jersey!==leftHeavy.jersey));
+      if(leftHeavy&&rightHeavy){
+        insights.push(`<strong>${leftHeavy.name}</strong> operates left-side (${leftHeavy.leftPct}%), <strong>${rightHeavy.name}</strong> right-side (${rightHeavy.rightPct}%). Spread the field — they won't crowd each other.`);
+      }
+
+      // Finishing efficiency at range
+      const validClose=playerShotProfiles.filter(p=>p.closePct!==null&&p.close>=3);
+      if(validClose.length>=2){
+        const top=[...validClose].sort((a,b)=>b.closePct-a.closePct)[0];
+        const bottom=[...validClose].sort((a,b)=>a.closePct-b.closePct)[0];
+        if(top.jersey!==bottom.jersey&&top.closePct-bottom.closePct>=20){
+          insights.push(`Inside the 8m, <strong>${top.name}</strong> converts ${top.closePct}% vs <strong>${bottom.name}</strong>'s ${bottom.closePct}%. Feed ${top.name} when close looks open.`);
+        }
+      }
+    }
   }
 
   // Fallback when no specific insight triggered
@@ -3874,7 +4024,7 @@ function buildMiniShotPreview(jersey,isGoalie){
   return `
     <div class="mini-shot" onclick="jumpToGalleryWith(${jersey},${isGoalie})">
       <div class="mini-shot-hdr">
-        <span>Season Shot Chart</span>
+        <span>Shot chart</span>
         <span class="mini-shot-count">${countLabel}</span>
       </div>
       <div class="mini-shot-grid">
