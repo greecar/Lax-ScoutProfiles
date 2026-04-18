@@ -942,6 +942,178 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#0d1117;color:#e6edf3;mi
 /* "Log shots" entry button in action bar */
 .log-shots-btn{color:#8b949e;}
 .log-shots-btn:hover{border-color:#58a6ff;color:#58a6ff;}
+
+/* ═══════════════════════════════════════════════════
+   SHOOTING GALLERY VIEW
+═══════════════════════════════════════════════════ */
+
+.sg-container{padding:20px 24px 40px;}
+
+/* Top controls row */
+.sg-controls{
+  display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;margin-bottom:20px;
+}
+.sg-ctrl-group{display:flex;flex-direction:column;gap:4px;}
+.sg-ctrl-label{
+  font-size:10px;font-weight:700;color:#8b949e;
+  text-transform:uppercase;letter-spacing:0.08em;
+}
+.sg-select{
+  background:#161b22;border:1px solid #30363d;color:#e6edf3;
+  padding:7px 12px;border-radius:8px;font-size:12px;font-family:inherit;
+  cursor:pointer;min-width:160px;
+}
+.sg-select:focus{outline:none;border-color:#58a6ff;}
+
+/* View switcher pills */
+.sg-view-row{
+  display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;
+  border-bottom:1px solid #21262d;padding-bottom:12px;
+}
+.sg-view-btn{
+  background:#161b22;border:1px solid #30363d;color:#8b949e;
+  padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;
+  cursor:pointer;font-family:inherit;transition:all 0.15s;
+}
+.sg-view-btn:hover{border-color:#58a6ff;color:#e6edf3;}
+.sg-view-btn.active{background:#58a6ff;color:#0d1117;border-color:#58a6ff;}
+
+/* Main content grid — chart on left, stats panel on right */
+.sg-main{
+  display:grid;grid-template-columns:1fr 340px;gap:20px;
+}
+@media(max-width:980px){.sg-main{grid-template-columns:1fr;}}
+
+.sg-chart-card{
+  background:#161b22;border:1px solid #21262d;border-radius:12px;
+  padding:18px;
+}
+.sg-chart-hdr{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:12px;flex-wrap:wrap;gap:10px;
+}
+.sg-chart-title{font-size:13px;font-weight:700;color:#e6edf3;}
+.sg-chart-meta{font-size:11px;color:#8b949e;}
+
+.sg-field-wrap{
+  position:relative;width:100%;max-width:560px;margin:0 auto;
+  aspect-ratio:3/4;background:#0a1f0a;border-radius:8px;overflow:hidden;
+}
+.sg-net-wrap{
+  position:relative;width:100%;max-width:380px;margin:0 auto;
+  aspect-ratio:6/4;background:#0d1117;border-radius:8px;overflow:hidden;
+  border:1px solid #30363d;
+}
+
+.sg-field-svg, .sg-net-svg{
+  position:absolute;inset:0;width:100%;height:100%;pointer-events:none;
+}
+
+/* Plotted dots on field/net */
+.sg-dot{
+  position:absolute;width:12px;height:12px;border-radius:50%;
+  transform:translate(-50%,-50%);pointer-events:auto;cursor:pointer;
+  border:1.5px solid rgba(255,255,255,0.3);
+  transition:transform 0.15s,box-shadow 0.15s;
+}
+.sg-dot:hover{
+  transform:translate(-50%,-50%) scale(1.4);
+  z-index:5;box-shadow:0 0 12px currentColor;
+}
+.sg-dot.r-goal{background:#3fb950;color:#3fb950;}
+.sg-dot.r-save{background:#e3b341;color:#e3b341;}
+.sg-dot.r-miss{background:#f85149;color:#f85149;}
+.sg-dot.r-pipe{background:#8b949e;color:#8b949e;}
+
+/* Tooltip */
+.sg-tooltip{
+  position:absolute;background:#21262d;color:#e6edf3;
+  padding:8px 12px;border-radius:6px;font-size:11px;
+  border:1px solid #30363d;box-shadow:0 4px 14px rgba(0,0,0,0.6);
+  pointer-events:none;z-index:20;max-width:200px;line-height:1.5;
+  display:none;
+}
+.sg-tooltip.show{display:block;}
+
+/* Legend */
+.sg-legend{
+  display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:#8b949e;
+  margin-top:12px;padding-top:12px;border-top:1px solid #21262d;
+}
+.sg-legend-item{display:flex;align-items:center;gap:6px;}
+.sg-legend-dot{width:10px;height:10px;border-radius:50%;}
+
+/* Right stats panel */
+.sg-stats{display:flex;flex-direction:column;gap:14px;}
+.sg-stats-card{
+  background:#161b22;border:1px solid #21262d;border-radius:12px;
+  padding:14px;
+}
+.sg-stats-hdr{
+  font-size:10px;font-weight:700;color:#8b949e;
+  text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;
+}
+.sg-stat-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:6px 0;border-bottom:1px solid #1c2128;font-size:12px;
+}
+.sg-stat-row:last-child{border-bottom:none;}
+.sg-stat-lbl{color:#8b949e;}
+.sg-stat-val{font-weight:700;color:#e6edf3;}
+.sg-stat-val.g{color:#3fb950;}
+.sg-stat-val.s{color:#e3b341;}
+.sg-stat-val.m{color:#f85149;}
+
+/* Insight panel */
+.sg-insight{
+  background:linear-gradient(135deg,#0d1117,#161b22);
+  border:1px solid #21262d;border-left:3px solid #58a6ff;
+  border-radius:10px;padding:14px 16px;
+}
+.sg-insight-hdr{
+  font-size:10px;font-weight:700;color:#58a6ff;
+  letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px;
+}
+.sg-insight-body{font-size:13px;color:#e6edf3;line-height:1.55;}
+.sg-insight-body strong{color:#58a6ff;}
+.sg-insight-body div{margin-bottom:6px;}
+.sg-insight-body div:last-child{margin-bottom:0;}
+
+.sg-empty{
+  text-align:center;padding:50px 20px;color:#484f58;font-size:13px;
+}
+.sg-empty strong{display:block;color:#8b949e;font-size:15px;margin-bottom:6px;}
+
+/* Scout card mini shot preview */
+.mini-shot{
+  padding:8px 16px 4px;cursor:pointer;
+  transition:background 0.15s;
+}
+.mini-shot:hover{background:rgba(88,166,255,0.04);}
+.mini-shot-hdr{
+  font-size:9px;font-weight:700;color:#484f58;
+  text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.mini-shot-count{font-size:10px;color:#8b949e;letter-spacing:0.04em;}
+.mini-shot-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.mini-field-wrap, .mini-net-wrap{
+  position:relative;aspect-ratio:3/4;background:#0a1f0a;
+  border-radius:6px;overflow:hidden;border:1px solid #21262d;
+}
+.mini-net-wrap{aspect-ratio:6/4;background:#0d1117;}
+.mini-shot-dot{
+  position:absolute;width:6px;height:6px;border-radius:50%;
+  transform:translate(-50%,-50%);
+}
+.mini-shot-dot.r-goal{background:#3fb950;}
+.mini-shot-dot.r-save{background:#e3b341;}
+.mini-shot-dot.r-miss{background:#f85149;}
+.mini-shot-dot.r-pipe{background:#8b949e;}
+.mini-shot-empty{
+  text-align:center;padding:14px 8px;color:#484f58;font-size:10px;
+  grid-column:1/-1;
+}
 </style>
 </head>
 <body>
@@ -1119,6 +1291,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#0d1117;color:#e6edf3;mi
   <div class="tab-nav">
     <button class="tab-btn active" id="tabScout" onclick="switchTab('scout')">Scout Cards</button>
     <button class="tab-btn" id="tabCompare" onclick="switchTab('compare')">Compare</button>
+    <button class="tab-btn" id="tabGallery" onclick="switchTab('gallery')">Shooting Gallery</button>
   </div>
 
   <div class="view active" id="viewScout">
@@ -1214,6 +1387,135 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#0d1117;color:#e6edf3;mi
 
     </div>
   </div><!-- /viewCompare -->
+
+  <div class="view" id="viewGallery">
+    <div class="sg-container">
+
+      <!-- Controls row -->
+      <div class="sg-controls">
+        <div class="sg-ctrl-group">
+          <span class="sg-ctrl-label">Game</span>
+          <select class="sg-select" id="sgGame" onchange="renderGallery()">
+            <option value="season">Full season</option>
+          </select>
+        </div>
+        <div class="sg-ctrl-group">
+          <span class="sg-ctrl-label">Player</span>
+          <select class="sg-select" id="sgPlayer" onchange="renderGallery()">
+            <option value="team">All players (team)</option>
+          </select>
+        </div>
+        <div class="sg-ctrl-group">
+          <span class="sg-ctrl-label">Opp goalie hand</span>
+          <select class="sg-select" id="sgOppHand" onchange="renderGallery()">
+            <option value="">Any</option>
+            <option value="R">vs Right-handed</option>
+            <option value="L">vs Left-handed</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- View switcher -->
+      <div class="sg-view-row">
+        <button class="sg-view-btn active" data-sgv="offField" onclick="setGalleryView('offField')">Offensive field</button>
+        <button class="sg-view-btn" data-sgv="offNet" onclick="setGalleryView('offNet')">Shot placement (net)</button>
+        <button class="sg-view-btn" data-sgv="defField" onclick="setGalleryView('defField')">Defensive field</button>
+        <button class="sg-view-btn" data-sgv="goalieNet" onclick="setGalleryView('goalieNet')">Goalie performance</button>
+      </div>
+
+      <!-- Main chart + stats -->
+      <div class="sg-main">
+        <div class="sg-chart-card">
+          <div class="sg-chart-hdr">
+            <div class="sg-chart-title" id="sgChartTitle">Offensive field chart</div>
+            <div class="sg-chart-meta" id="sgChartMeta">—</div>
+          </div>
+
+          <!-- FIELD view wrapper -->
+          <div class="sg-field-wrap" id="sgFieldContainer" style="display:block;">
+            <svg class="sg-field-svg" viewBox="0 0 300 400" preserveAspectRatio="none">
+              <rect x="0" y="0" width="300" height="400" fill="#0d2d0d"/>
+              <rect x="0" y="0" width="300" height="50" fill="#0f3310" opacity="0.6"/>
+              <rect x="0" y="100" width="300" height="50" fill="#0f3310" opacity="0.6"/>
+              <rect x="0" y="200" width="300" height="50" fill="#0f3310" opacity="0.6"/>
+              <rect x="0" y="300" width="300" height="50" fill="#0f3310" opacity="0.6"/>
+              <line x1="0" y1="60" x2="300" y2="60" stroke="#fff" stroke-width="1.5" opacity="0.7"/>
+              <text x="150" y="54" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="10" font-family="Arial">RESTRAINING LINE</text>
+              <path d="M 10 340 A 140 140 0 0 1 290 340" stroke="#fff" stroke-width="1.5" fill="none" opacity="0.55"/>
+              <text x="150" y="215" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="11" font-weight="600" font-family="Arial">12m</text>
+              <path d="M 65 340 A 85 85 0 0 1 235 340" stroke="#fff" stroke-width="1.5" fill="none" opacity="0.55"/>
+              <text x="150" y="270" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="11" font-weight="600" font-family="Arial">8m</text>
+              <ellipse cx="150" cy="340" rx="55" ry="32" stroke="#fff" stroke-width="1.5" fill="rgba(255,255,255,0.03)" opacity="0.7"/>
+              <line x1="50" y1="340" x2="250" y2="340" stroke="#fff" stroke-width="1.2" opacity="0.6"/>
+              <rect x="120" y="332" width="60" height="12" fill="rgba(200,150,12,0.25)" stroke="#c8960c" stroke-width="2.5"/>
+              <text x="150" y="342" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="9" font-weight="700" font-family="Arial" letter-spacing="1">GOAL</text>
+              <line x1="1" y1="0" x2="1" y2="400" stroke="#fff" stroke-width="1" opacity="0.6"/>
+              <line x1="299" y1="0" x2="299" y2="400" stroke="#fff" stroke-width="1" opacity="0.6"/>
+              <line x1="0" y1="399" x2="300" y2="399" stroke="#fff" stroke-width="1" opacity="0.6"/>
+              <text x="150" y="395" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-size="8" font-family="Arial">ENDLINE</text>
+            </svg>
+            <div id="sgFieldDots"></div>
+          </div>
+
+          <!-- NET view wrapper (hidden by default) -->
+          <div class="sg-net-wrap" id="sgNetContainer" style="display:none;">
+            <svg class="sg-net-svg" viewBox="0 0 300 200" preserveAspectRatio="none">
+              <!-- Outer miss region background -->
+              <rect x="0" y="0" width="300" height="200" fill="#0d1117"/>
+              <!-- Goal mouth (6x4 inside 300x200 viewBox, centered) -->
+              <rect x="60" y="40" width="180" height="120" fill="#050a10" stroke="#c8960c" stroke-width="2"/>
+              <!-- Inner 3x3 grid lines -->
+              <line x1="120" y1="40" x2="120" y2="160" stroke="#30363d" stroke-width="1" opacity="0.6"/>
+              <line x1="180" y1="40" x2="180" y2="160" stroke="#30363d" stroke-width="1" opacity="0.6"/>
+              <line x1="60" y1="80" x2="240" y2="80" stroke="#30363d" stroke-width="1" opacity="0.6"/>
+              <line x1="60" y1="120" x2="240" y2="120" stroke="#30363d" stroke-width="1" opacity="0.6"/>
+              <!-- Zone labels (shooter-perspective: L/R as shooter sees it) -->
+              <text x="90"  y="62"  text-anchor="middle" fill="rgba(255,255,255,0.2)" font-size="9" font-family="Arial">TL</text>
+              <text x="150" y="62"  text-anchor="middle" fill="rgba(255,255,255,0.2)" font-size="9" font-family="Arial">TC</text>
+              <text x="210" y="62"  text-anchor="middle" fill="rgba(255,255,255,0.2)" font-size="9" font-family="Arial">TR</text>
+              <text x="90"  y="104" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-size="9" font-family="Arial">ML</text>
+              <text x="150" y="104" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-size="9" font-family="Arial">MC</text>
+              <text x="210" y="104" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-size="9" font-family="Arial">MR</text>
+              <text x="90"  y="146" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-size="9" font-family="Arial">BL</text>
+              <text x="150" y="146" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-size="9" font-family="Arial">BC</text>
+              <text x="210" y="146" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-size="9" font-family="Arial">BR</text>
+              <!-- Outer miss zone labels -->
+              <text x="30"  y="20"  text-anchor="middle" fill="rgba(255,255,255,0.15)" font-size="8" font-family="Arial">OTL</text>
+              <text x="150" y="20"  text-anchor="middle" fill="rgba(255,255,255,0.15)" font-size="8" font-family="Arial">OT</text>
+              <text x="270" y="20"  text-anchor="middle" fill="rgba(255,255,255,0.15)" font-size="8" font-family="Arial">OTR</text>
+              <text x="20"  y="104" text-anchor="middle" fill="rgba(255,255,255,0.15)" font-size="8" font-family="Arial">OL</text>
+              <text x="280" y="104" text-anchor="middle" fill="rgba(255,255,255,0.15)" font-size="8" font-family="Arial">OR</text>
+              <text x="150" y="190" text-anchor="middle" fill="rgba(255,255,255,0.15)" font-size="8" font-family="Arial">OB</text>
+            </svg>
+            <div id="sgNetDots"></div>
+          </div>
+
+          <div class="sg-legend" id="sgLegend"></div>
+          <div class="sg-tooltip" id="sgTooltip"></div>
+        </div>
+
+        <div class="sg-stats">
+          <div class="sg-stats-card" id="sgTotals">
+            <div class="sg-stats-hdr">Totals</div>
+            <div id="sgTotalsBody"></div>
+          </div>
+          <div class="sg-stats-card" id="sgZones" style="display:none;">
+            <div class="sg-stats-hdr">By net zone</div>
+            <div id="sgZonesBody"></div>
+          </div>
+          <div class="sg-insight" id="sgInsight" style="display:none;">
+            <div class="sg-insight-hdr">Scouting Read</div>
+            <div class="sg-insight-body" id="sgInsightBody"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sg-empty" id="sgEmpty" style="display:none;">
+        <strong>No shots logged yet</strong>
+        Use the "Log shots" button on any game to start tracking. Once you have data, it will appear here.
+      </div>
+    </div>
+  </div><!-- /viewGallery -->
 
   <!-- Player picker modal -->
   <div class="cmp-picker-bg" id="cmpPickerBg" onclick="if(event.target===this)closeCmpPicker()">
@@ -1631,6 +1933,13 @@ let ROSTER=[], GAMES=[], posFilter='ALL', curIdxs=[], nbaMap={}, editId=null;
 // Compare view state
 let cmpSlots=[null,null,null]; // array of jersey numbers (or null)
 
+// Shooting Gallery state
+let SHOTS=[];                     // all shots loaded from DB, refreshed on demand
+let sgView='offField';            // 'offField' | 'offNet' | 'defField' | 'goalieNet'
+let sgGameFilter='season';        // 'season' or a game id
+let sgPlayerFilter='team';        // 'team' or a jersey number (string)
+let sgOppHandFilter='';           // '', 'L', 'R'
+
 // Shot entry state
 let seGameId=null;               // which game's shots we're logging
 let seShots=[];                  // in-memory buffer of this session's shots
@@ -1691,6 +2000,8 @@ async function initApp(){
     curIdxs=GAMES.map((_,i)=>i);
     buildGrid();
     updateTop();
+    // Preload shots for mini-previews on scout cards
+    try{SHOTS=await fetchAllShots();buildGrid();}catch(e){console.warn('Shot preload failed:',e);}
   } catch(e){
     document.getElementById('loadScreen').innerHTML=`<p style="color:#f85149;text-align:center;padding:20px">Failed to connect to database.<br><small>${e.message}</small></p>`;
   }
@@ -1706,6 +2017,7 @@ async function refresh(){
   curIdxs=GAMES.map((_,i)=>i);
   document.getElementById('gameSelect').value='season';
   onGameChange();
+  try{SHOTS=await fetchAllShots();buildGrid();}catch(e){console.warn('Shot refresh failed:',e);}
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1756,6 +2068,16 @@ async function fetchShotsForGame(gameId){
     return await db.get('shots','game_id=eq.'+gameId+'&order=created_at.asc')||[];
   } catch(e){
     console.error('Shot fetch failed:',e);
+    return [];
+  }
+}
+
+// Fetch ALL shots (used by Shooting Gallery)
+async function fetchAllShots(){
+  try {
+    return await db.get('shots','order=created_at.asc')||[];
+  } catch(e){
+    console.error('Shot load failed:',e);
     return [];
   }
 }
@@ -2183,7 +2505,7 @@ function buildCard(player,all){
     <div class="fd-row"><span class="fd-lbl">GSO allowed</span><span class="fd-val">${s.gsoAllowed}</span></div>`:''}
   </div>
 </div>`;
-  return `<div class="card" data-pos="${pos}" data-jersey="${player.jersey}" id="card_${player.jersey}"><div class="card-header"><div class="avatar av-${pos}">${ini(player.name)}</div><div><div class="card-name">#${player.jersey} ${player.name}<span class="pos-pill pill-${pos}">${posL(player.position)}</span></div><div class="card-sub">Class of ${player.grad_year} · ${player.hand}-handed</div></div></div>${blurb?`<div class="blurb"><div class="blurb-text">${blurb}</div>${nba?`<div class="nba-comp">NBA comp: <span>${nba}</span></div>`:''}</div>`:''}<div class="radar-wrap"><canvas id="radar_${player.jersey}" height="170"></canvas></div>${strip}${bars}${dodge}<button class="expand-btn" id="expBtn_${player.jersey}" onclick="toggleDetail(event,${player.jersey})">All stats ▾</button><div class="full-detail" id="det_${player.jersey}">${fd}<div style="margin-top:14px;padding-top:12px;border-top:1px solid #21262d;text-align:center;"><button class="ctrl-btn green" style="padding:8px 16px;font-size:12px;" onclick="jumpToCompareWith(${player.jersey})">Compare with others ⇢</button></div></div></div>`;
+  return `<div class="card" data-pos="${pos}" data-jersey="${player.jersey}" id="card_${player.jersey}"><div class="card-header"><div class="avatar av-${pos}">${ini(player.name)}</div><div><div class="card-name">#${player.jersey} ${player.name}<span class="pos-pill pill-${pos}">${posL(player.position)}</span></div><div class="card-sub">Class of ${player.grad_year} · ${player.hand}-handed</div></div></div>${blurb?`<div class="blurb"><div class="blurb-text">${blurb}</div>${nba?`<div class="nba-comp">NBA comp: <span>${nba}</span></div>`:''}</div>`:''}<div class="radar-wrap"><canvas id="radar_${player.jersey}" height="170"></canvas></div>${strip}${bars}${dodge}${buildMiniShotPreview(player.jersey,isG)}<button class="expand-btn" id="expBtn_${player.jersey}" onclick="toggleDetail(event,${player.jersey})">All stats ▾</button><div class="full-detail" id="det_${player.jersey}">${fd}<div style="margin-top:14px;padding-top:12px;border-top:1px solid #21262d;text-align:center;"><button class="ctrl-btn green" style="padding:8px 16px;font-size:12px;" onclick="jumpToCompareWith(${player.jersey})">Compare with others ⇢</button></div></div></div>`;
 }
 
 function drawRadar(player,all){
@@ -2239,16 +2561,22 @@ function toggleDetail(e,j){e.stopPropagation();const d=document.getElementById('
 // ═══════════════════════════════════════════════════════════════════════════
 
 function switchTab(which){
-  const s=document.getElementById('viewScout'),c=document.getElementById('viewCompare');
-  const ts=document.getElementById('tabScout'),tc=document.getElementById('tabCompare');
-  if(which==='compare'){
-    s.classList.remove('active');c.classList.add('active');
-    ts.classList.remove('active');tc.classList.add('active');
-    renderCompare();
-  } else {
-    c.classList.remove('active');s.classList.add('active');
-    tc.classList.remove('active');ts.classList.add('active');
-  }
+  const views={
+    scout:document.getElementById('viewScout'),
+    compare:document.getElementById('viewCompare'),
+    gallery:document.getElementById('viewGallery'),
+  };
+  const tabs={
+    scout:document.getElementById('tabScout'),
+    compare:document.getElementById('tabCompare'),
+    gallery:document.getElementById('tabGallery'),
+  };
+  Object.keys(views).forEach(k=>{
+    if(views[k])views[k].classList.toggle('active',k===which);
+    if(tabs[k])tabs[k].classList.toggle('active',k===which);
+  });
+  if(which==='compare')renderCompare();
+  else if(which==='gallery')openGallery();
 }
 
 function jumpToCompareWith(jersey){
@@ -3099,6 +3427,468 @@ function renderSeCounts(){
   if(gg)gg.textContent=g;
   if(ss)ss.textContent=sv;
   if(mm)mm.textContent=m;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SHOOTING GALLERY LOGIC
+// ═══════════════════════════════════════════════════════════════════════════
+
+async function openGallery(){
+  // Load shots fresh each time gallery opens
+  SHOTS=await fetchAllShots();
+  populateGalleryControls();
+  renderGallery();
+}
+
+function populateGalleryControls(){
+  // Populate game filter from GAMES
+  const gsel=document.getElementById('sgGame');
+  const cur=gsel.value;
+  gsel.innerHTML='<option value="season">Full season</option>'+GAMES.map(g=>{
+    const d=new Date(g.date+'T00:00:00');
+    const mo=d.toLocaleDateString('en-US',{month:'short'});
+    const day=d.getDate();
+    return `<option value="${g.id}">${mo} ${day} — ${g.opponent}</option>`;
+  }).join('');
+  if([...gsel.options].some(o=>o.value===cur))gsel.value=cur;
+
+  // Populate player filter from ROSTER
+  const psel=document.getElementById('sgPlayer');
+  const curP=psel.value;
+  // Only show non-goalies for offensive views; goalies for defensive views
+  if(sgView==='goalieNet'){
+    const goalies=ROSTER.filter(p=>posN(p.position)==='G');
+    psel.innerHTML='<option value="team">All goalies</option>'+goalies.map(p=>`<option value="${p.jersey}">#${p.jersey} ${p.name}</option>`).join('');
+  } else if(sgView==='defField'){
+    const goalies=ROSTER.filter(p=>posN(p.position)==='G');
+    psel.innerHTML='<option value="team">Team (all goalies)</option>'+goalies.map(p=>`<option value="${p.jersey}">When #${p.jersey} in net</option>`).join('');
+  } else {
+    const fielders=ROSTER.filter(p=>posN(p.position)!=='G');
+    psel.innerHTML='<option value="team">All players (team)</option>'+fielders.map(p=>`<option value="${p.jersey}">#${p.jersey} ${p.name}</option>`).join('');
+  }
+  if([...psel.options].some(o=>o.value===curP))psel.value=curP;
+
+  // Sync state
+  sgGameFilter=gsel.value;
+  sgPlayerFilter=psel.value;
+  sgOppHandFilter=document.getElementById('sgOppHand').value;
+}
+
+function setGalleryView(v){
+  sgView=v;
+  document.querySelectorAll('.sg-view-btn').forEach(b=>{
+    b.classList.toggle('active',b.dataset.sgv===v);
+  });
+  populateGalleryControls();
+  renderGallery();
+}
+
+// Filter SHOTS based on current gallery filters + view
+function filterShotsForView(){
+  sgGameFilter=document.getElementById('sgGame')?.value||'season';
+  sgPlayerFilter=document.getElementById('sgPlayer')?.value||'team';
+  sgOppHandFilter=document.getElementById('sgOppHand')?.value||'';
+
+  let arr=SHOTS.slice();
+
+  // Game filter
+  if(sgGameFilter!=='season'){
+    arr=arr.filter(s=>s.game_id===sgGameFilter);
+  }
+
+  // Team filter by view
+  // offField & offNet: team='us' only
+  // defField & goalieNet: team='opp' only
+  if(sgView==='offField'||sgView==='offNet'){
+    arr=arr.filter(s=>s.team==='us');
+  } else {
+    arr=arr.filter(s=>s.team==='opp');
+  }
+
+  // Player filter
+  if(sgPlayerFilter!=='team'){
+    const j=parseInt(sgPlayerFilter);
+    if(sgView==='offField'||sgView==='offNet'){
+      arr=arr.filter(s=>s.jersey===j);
+    } else {
+      // Defensive views filter by which goalie was in net
+      arr=arr.filter(s=>s.goalie_jersey===j);
+    }
+  }
+
+  // Opp hand filter (only meaningful for offensive views)
+  if((sgView==='offField'||sgView==='offNet')&&sgOppHandFilter){
+    arr=arr.filter(s=>s.opponent_goalie_hand===sgOppHandFilter);
+  }
+
+  return arr;
+}
+
+function renderGallery(){
+  if(!document.getElementById('viewGallery').classList.contains('active'))return;
+  populateGalleryControls();
+  const shots=filterShotsForView();
+
+  // Empty state check
+  const emptyEl=document.getElementById('sgEmpty');
+  const chartsEl=document.querySelector('#viewGallery .sg-main');
+  if(SHOTS.length===0){
+    emptyEl.style.display='block';
+    chartsEl.style.display='none';
+    return;
+  }
+  emptyEl.style.display='none';
+  chartsEl.style.display='grid';
+
+  // Toggle which container is visible
+  const fieldWrap=document.getElementById('sgFieldContainer');
+  const netWrap=document.getElementById('sgNetContainer');
+  if(sgView==='offField'||sgView==='defField'){
+    fieldWrap.style.display='block';
+    netWrap.style.display='none';
+  } else {
+    fieldWrap.style.display='none';
+    netWrap.style.display='block';
+  }
+
+  // Update title + meta
+  const titles={
+    offField:'Offensive field — where we shoot from',
+    offNet:'Shot placement — where our shots land',
+    defField:'Defensive field — where opponents shoot from',
+    goalieNet:'Goalie chart — where opponents placed shots',
+  };
+  document.getElementById('sgChartTitle').textContent=titles[sgView]||'';
+  document.getElementById('sgChartMeta').textContent=`${shots.length} shot${shots.length!==1?'s':''}`;
+
+  // Legend
+  const lg=document.getElementById('sgLegend');
+  lg.innerHTML=`
+    <div class="sg-legend-item"><span class="sg-legend-dot" style="background:#3fb950"></span>Goal</div>
+    <div class="sg-legend-item"><span class="sg-legend-dot" style="background:#e3b341"></span>Save</div>
+    <div class="sg-legend-item"><span class="sg-legend-dot" style="background:#f85149"></span>Miss</div>
+    <div class="sg-legend-item"><span class="sg-legend-dot" style="background:#8b949e"></span>Pipe</div>
+  `;
+
+  // Draw dots
+  if(sgView==='offField'||sgView==='defField'){
+    renderFieldDots(shots);
+  } else {
+    renderNetDots(shots);
+  }
+
+  // Right-panel stats
+  renderGalleryTotals(shots);
+  renderGalleryZones(shots);
+  renderGalleryInsight(shots);
+}
+
+function renderFieldDots(shots){
+  const container=document.getElementById('sgFieldDots');
+  // Clear existing dots
+  container.innerHTML='';
+  shots.forEach(s=>{
+    if(s.field_x===null||s.field_y===null)return;
+    const dot=document.createElement('div');
+    dot.className='sg-dot r-'+(s.result||'miss');
+    dot.style.left=(s.field_x*100)+'%';
+    dot.style.top=(s.field_y*100)+'%';
+    dot.addEventListener('mouseenter',e=>showSgTooltip(e,s));
+    dot.addEventListener('mouseleave',hideSgTooltip);
+    container.appendChild(dot);
+  });
+}
+
+function renderNetDots(shots){
+  const container=document.getElementById('sgNetDots');
+  container.innerHTML='';
+  // Map each net_zone to a normalized x,y on the 300x200 viewBox
+  // Using percentages on the wrap element. Viewbox is 300x200, goal inside is x=60-240, y=40-160.
+  const zoneCoords={
+    // Inner 3x3 (shooter perspective)
+    TL:[0.30,0.30],TC:[0.50,0.30],TR:[0.70,0.30],
+    ML:[0.30,0.50],MC:[0.50,0.50],MR:[0.70,0.50],
+    BL:[0.30,0.70],BC:[0.50,0.70],BR:[0.70,0.70],
+    // Outer 6 (rough center points for misses)
+    OTL:[0.08,0.12],OT:[0.50,0.10],OTR:[0.92,0.12],
+    OL:[0.05,0.50],OR:[0.95,0.50],OB:[0.50,0.92],
+  };
+  // Group shots by zone for jitter
+  const grouped={};
+  shots.forEach(s=>{
+    if(!s.net_zone)return;
+    if(!grouped[s.net_zone])grouped[s.net_zone]=[];
+    grouped[s.net_zone].push(s);
+  });
+  Object.keys(grouped).forEach(zone=>{
+    const coord=zoneCoords[zone];
+    if(!coord)return;
+    const group=grouped[zone];
+    group.forEach((s,i)=>{
+      // Jitter dots in a grid within the zone
+      const n=group.length;
+      const cols=Math.ceil(Math.sqrt(n));
+      const rows=Math.ceil(n/cols);
+      const col=i%cols,row=Math.floor(i/cols);
+      const jitterX=((col+0.5)/cols-0.5)*0.08;
+      const jitterY=((row+0.5)/rows-0.5)*0.08;
+      const dot=document.createElement('div');
+      dot.className='sg-dot r-'+(s.result||'miss');
+      dot.style.left=((coord[0]+jitterX)*100)+'%';
+      dot.style.top=((coord[1]+jitterY)*100)+'%';
+      dot.addEventListener('mouseenter',e=>showSgTooltip(e,s));
+      dot.addEventListener('mouseleave',hideSgTooltip);
+      container.appendChild(dot);
+    });
+  });
+}
+
+function showSgTooltip(e,shot){
+  const tt=document.getElementById('sgTooltip');
+  const wrap=e.currentTarget.closest('.sg-chart-card');
+  const wrapRect=wrap.getBoundingClientRect();
+  const dotRect=e.currentTarget.getBoundingClientRect();
+  const shooter=shot.team==='us'&&shot.jersey?ROSTER.find(r=>r.jersey===shot.jersey):null;
+  const shooterLbl=shot.team==='opp'?'Opponent':(shooter?`#${shot.jersey} ${shooter.name.split(' ')[0]}`:'#'+shot.jersey);
+  const goalieLbl=shot.goalie_jersey?(()=>{const g=ROSTER.find(r=>r.jersey===shot.goalie_jersey);return g?`#${g.jersey} ${g.name.split(' ')[0]}`:'#'+shot.goalie_jersey;})():null;
+  const typeLbl=shot.shot_type==='dodge'?'Dodge':shot.shot_type==='catch_shoot'?'Catch & shoot':shot.shot_type==='free_pos'?'Free pos':null;
+  const parts=[];
+  parts.push(`<strong>${shot.result.toUpperCase()}</strong>`);
+  parts.push(shooterLbl);
+  if(shot.net_zone)parts.push('Zone: '+shot.net_zone);
+  if(typeLbl)parts.push(typeLbl);
+  if(goalieLbl&&shot.team==='opp')parts.push('Goalie: '+goalieLbl);
+  if(shot.opponent_goalie_hand)parts.push('vs '+shot.opponent_goalie_hand+'H');
+  if(shot.quarter)parts.push('Q'+shot.quarter);
+  tt.innerHTML=parts.join('<br>');
+  tt.style.left=(dotRect.left-wrapRect.left+14)+'px';
+  tt.style.top=(dotRect.top-wrapRect.top-10)+'px';
+  tt.classList.add('show');
+}
+function hideSgTooltip(){
+  document.getElementById('sgTooltip').classList.remove('show');
+}
+
+// ── Right panel stats ────────────────────────────────────────────────────────
+function renderGalleryTotals(shots){
+  const body=document.getElementById('sgTotalsBody');
+  const total=shots.length;
+  const goals=shots.filter(s=>s.result==='goal').length;
+  const saves=shots.filter(s=>s.result==='save').length;
+  const miss=shots.filter(s=>s.result==='miss').length;
+  const pipe=shots.filter(s=>s.result==='pipe').length;
+  const onGoal=goals+saves;
+  const shotPct=onGoal+miss+pipe>0?Math.round(goals/(onGoal+miss+pipe)*100):null;
+  const convOnGoal=onGoal>0?Math.round(goals/onGoal*100):null;
+
+  // For defensive/goalie views, relabel
+  const isDef=(sgView==='defField'||sgView==='goalieNet');
+  const label=isDef?{
+    goals:'Goals allowed',saves:'Saves',miss:'Opp missed',pipe:'Pipe',shotPct:'% scored against',convOnGoal:'% of on-goal saved'
+  }:{
+    goals:'Goals',saves:'Saved',miss:'Missed',pipe:'Pipe',shotPct:'Shot %',convOnGoal:'Conversion on-goal'
+  };
+
+  let html='';
+  html+=`<div class="sg-stat-row"><span class="sg-stat-lbl">Total shots</span><span class="sg-stat-val">${total}</span></div>`;
+  html+=`<div class="sg-stat-row"><span class="sg-stat-lbl">${label.goals}</span><span class="sg-stat-val g">${goals}</span></div>`;
+  html+=`<div class="sg-stat-row"><span class="sg-stat-lbl">${label.saves}</span><span class="sg-stat-val s">${saves}</span></div>`;
+  html+=`<div class="sg-stat-row"><span class="sg-stat-lbl">${label.miss}</span><span class="sg-stat-val m">${miss}</span></div>`;
+  if(pipe>0)html+=`<div class="sg-stat-row"><span class="sg-stat-lbl">${label.pipe}</span><span class="sg-stat-val">${pipe}</span></div>`;
+  if(shotPct!==null)html+=`<div class="sg-stat-row"><span class="sg-stat-lbl">${label.shotPct}</span><span class="sg-stat-val">${shotPct}%</span></div>`;
+  if(convOnGoal!==null)html+=`<div class="sg-stat-row"><span class="sg-stat-lbl">${label.convOnGoal}</span><span class="sg-stat-val">${convOnGoal}%</span></div>`;
+  body.innerHTML=html;
+}
+
+function renderGalleryZones(shots){
+  const card=document.getElementById('sgZones');
+  const body=document.getElementById('sgZonesBody');
+  // Only meaningful on net-based views
+  if(sgView!=='offNet'&&sgView!=='goalieNet'){
+    card.style.display='none';return;
+  }
+  card.style.display='block';
+
+  const zones=['TL','TC','TR','ML','MC','MR','BL','BC','BR'];
+  const byZone={};
+  zones.forEach(z=>byZone[z]={total:0,goal:0,save:0});
+  shots.forEach(s=>{
+    if(!s.net_zone||!byZone[s.net_zone])return;
+    byZone[s.net_zone].total++;
+    if(s.result==='goal')byZone[s.net_zone].goal++;
+    else if(s.result==='save')byZone[s.net_zone].save++;
+  });
+
+  // Render top zones by volume
+  const sorted=zones.map(z=>({z,...byZone[z]})).filter(o=>o.total>0).sort((a,b)=>b.total-a.total);
+  if(sorted.length===0){
+    body.innerHTML='<div style="color:#484f58;text-align:center;padding:10px;font-size:11px;">No shots in net yet.</div>';
+    return;
+  }
+  body.innerHTML=sorted.slice(0,6).map(o=>{
+    const pct=o.total>0?Math.round(o.goal/o.total*100):0;
+    return `<div class="sg-stat-row"><span class="sg-stat-lbl">${o.z}</span><span class="sg-stat-val">${o.goal}G / ${o.total} <span style="color:#484f58;font-weight:400;">(${pct}%)</span></span></div>`;
+  }).join('');
+}
+
+function renderGalleryInsight(shots){
+  const box=document.getElementById('sgInsight');
+  const body=document.getElementById('sgInsightBody');
+  if(shots.length<3){box.style.display='none';return;}
+  box.style.display='block';
+
+  const lines=[];
+  const total=shots.length;
+
+  // Insight: net zone distribution (for net views)
+  if(sgView==='offNet'||sgView==='goalieNet'){
+    const zones=['TL','TC','TR','ML','MC','MR','BL','BC','BR'];
+    const byZone={};
+    zones.forEach(z=>byZone[z]={total:0,goal:0,save:0});
+    shots.forEach(s=>{if(s.net_zone&&byZone[s.net_zone]){byZone[s.net_zone].total++;if(s.result==='goal')byZone[s.net_zone].goal++;else if(s.result==='save')byZone[s.net_zone].save++;}});
+
+    const topVol=Object.entries(byZone).filter(([z,d])=>d.total>0).sort(([,a],[,b])=>b.total-a.total)[0];
+    if(topVol){
+      const [zone,d]=topVol;
+      const pct=Math.round(d.total/total*100);
+      if(sgView==='offNet')lines.push(`<strong>${pct}%</strong> of shots placed in the <strong>${zone}</strong> zone (${d.goal}G of ${d.total}).`);
+      else lines.push(`Opponents target <strong>${zone}</strong> most (${pct}% of shots, ${d.goal} scored against).`);
+    }
+
+    // Find best / worst conversion zones
+    const withData=Object.entries(byZone).filter(([z,d])=>d.total>=2);
+    if(withData.length>=2){
+      const withPct=withData.map(([z,d])=>({z,pct:Math.round(d.goal/d.total*100),t:d.total}));
+      const best=[...withPct].sort((a,b)=>b.pct-a.pct)[0];
+      const worst=[...withPct].sort((a,b)=>a.pct-b.pct)[0];
+      if(sgView==='offNet'&&best.pct>=50&&best.z!==worst.z){
+        lines.push(`Deadliest zone: <strong>${best.z}</strong> (${best.pct}% finishing on ${best.t} attempts).`);
+      }
+      if(sgView==='goalieNet'&&best.z!==worst.z){
+        // In goalie view, "pct" means goals scored against; lower is better for goalie
+        // Recompute "save pct" per zone
+        const save=withData.map(([z,d])=>({z,pct:Math.round(d.save/d.total*100),t:d.total}));
+        const strongest=[...save].sort((a,b)=>b.pct-a.pct)[0];
+        const weakest=[...save].sort((a,b)=>a.pct-b.pct)[0];
+        if(strongest.pct-weakest.pct>=30){
+          lines.push(`Strong in <strong>${strongest.z}</strong> (${strongest.pct}% save), weak in <strong>${weakest.z}</strong> (${weakest.pct}% save). Focus training on the weak zone.`);
+        }
+      }
+    }
+  }
+
+  // Insight: field zone tendencies (for field views)
+  if(sgView==='offField'||sgView==='defField'){
+    // Categorize each shot by field zone: Inside 8m (close), 8-12m (mid), Above 12m (far)
+    // Using field_y as proxy: y>0.78 = close, 0.55<y<=0.78 = mid, y<=0.55 = far
+    const close=shots.filter(s=>s.field_y!==null&&s.field_y>0.78);
+    const mid=shots.filter(s=>s.field_y!==null&&s.field_y>0.55&&s.field_y<=0.78);
+    const far=shots.filter(s=>s.field_y!==null&&s.field_y<=0.55);
+
+    const closePct=close.length?Math.round(close.filter(s=>s.result==='goal').length/close.length*100):null;
+    const midPct=mid.length?Math.round(mid.filter(s=>s.result==='goal').length/mid.length*100):null;
+    const farPct=far.length?Math.round(far.filter(s=>s.result==='goal').length/far.length*100):null;
+
+    if(sgView==='offField'){
+      if(closePct!==null&&close.length>=2)lines.push(`Inside 8m: <strong>${closePct}%</strong> finishing (${close.filter(s=>s.result==='goal').length}/${close.length}).`);
+      if(midPct!==null&&mid.length>=2)lines.push(`8-12m range: <strong>${midPct}%</strong> (${mid.filter(s=>s.result==='goal').length}/${mid.length}).`);
+      if(farPct!==null&&far.length>=2)lines.push(`Above 12m: <strong>${farPct}%</strong> (${far.filter(s=>s.result==='goal').length}/${far.length}).`);
+    } else {
+      if(close.length>=2){
+        const allowed=close.filter(s=>s.result==='goal').length;
+        const pct=Math.round(allowed/close.length*100);
+        lines.push(`Inside 8m: conceding <strong>${pct}%</strong> (${allowed}/${close.length} scored). Help-defense priority.`);
+      }
+    }
+
+    // Lateral tendency (field_x)
+    const left=shots.filter(s=>s.field_x!==null&&s.field_x<0.38).length;
+    const right=shots.filter(s=>s.field_x!==null&&s.field_x>0.62).length;
+    const center=total-left-right;
+    if(total>=5){
+      const leftPct=Math.round(left/total*100);
+      const rightPct=Math.round(right/total*100);
+      if(Math.abs(leftPct-rightPct)>=20){
+        const side=leftPct>rightPct?'LEFT':'RIGHT';
+        const sidePct=Math.max(leftPct,rightPct);
+        if(sgView==='offField')lines.push(`Shot origin skews <strong>${side}</strong> (${sidePct}%). Diversify spacing.`);
+        else lines.push(`Opponents attack our <strong>${side}</strong> (${sidePct}%). Adjust defensive matchups.`);
+      }
+    }
+  }
+
+  // Handedness split (offensive only)
+  if(sgView==='offField'||sgView==='offNet'){
+    const vsR=shots.filter(s=>s.opponent_goalie_hand==='R');
+    const vsL=shots.filter(s=>s.opponent_goalie_hand==='L');
+    if(vsR.length>=3&&vsL.length>=3){
+      const pctR=Math.round(vsR.filter(s=>s.result==='goal').length/vsR.length*100);
+      const pctL=Math.round(vsL.filter(s=>s.result==='goal').length/vsL.length*100);
+      if(Math.abs(pctR-pctL)>=15){
+        const better=pctR>pctL?'right-handed':'left-handed';
+        const worse=pctR>pctL?'left-handed':'right-handed';
+        lines.push(`Scoring <strong>${Math.max(pctR,pctL)}%</strong> vs ${better} goalies, only <strong>${Math.min(pctR,pctL)}%</strong> vs ${worse}.`);
+      }
+    }
+  }
+
+  if(!lines.length){
+    body.innerHTML='<div>Need more shots for meaningful patterns. Keep logging — insights will sharpen.</div>';
+    return;
+  }
+  body.innerHTML=lines.slice(0,4).map(l=>'<div>'+l+'</div>').join('');
+}
+
+// ── Scout card mini shot preview ────────────────────────────────────────────
+// Returns HTML string for a mini shot preview section inside a player's card
+function buildMiniShotPreview(jersey,isGoalie){
+  if(!SHOTS||SHOTS.length===0)return '';
+  let relevant;
+  if(isGoalie){
+    // For goalies: show where opponents shot against them
+    relevant=SHOTS.filter(s=>s.team==='opp'&&s.goalie_jersey===jersey);
+  } else {
+    relevant=SHOTS.filter(s=>s.team==='us'&&s.jersey===jersey);
+  }
+  if(relevant.length===0)return '';
+
+  const goals=relevant.filter(s=>s.result==='goal').length;
+  // Build field dots
+  const fieldDots=relevant.filter(s=>s.field_x!==null&&s.field_y!==null).map(s=>{
+    return `<div class="mini-shot-dot r-${s.result||'miss'}" style="left:${s.field_x*100}%;top:${s.field_y*100}%;"></div>`;
+  }).join('');
+  // Build net dots
+  const zoneCoords={TL:[0.30,0.30],TC:[0.50,0.30],TR:[0.70,0.30],ML:[0.30,0.50],MC:[0.50,0.50],MR:[0.70,0.50],BL:[0.30,0.70],BC:[0.50,0.70],BR:[0.70,0.70],OTL:[0.08,0.12],OT:[0.50,0.10],OTR:[0.92,0.12],OL:[0.05,0.50],OR:[0.95,0.50],OB:[0.50,0.92]};
+  const netDots=relevant.filter(s=>s.net_zone&&zoneCoords[s.net_zone]).map(s=>{
+    const c=zoneCoords[s.net_zone];
+    return `<div class="mini-shot-dot r-${s.result||'miss'}" style="left:${c[0]*100}%;top:${c[1]*100}%;"></div>`;
+  }).join('');
+
+  const countLabel=isGoalie?`${relevant.length} faced · ${goals} allowed`:`${relevant.length} shot${relevant.length!==1?'s':''} · ${goals}G`;
+
+  return `
+    <div class="mini-shot" onclick="jumpToGalleryWith(${jersey},${isGoalie})">
+      <div class="mini-shot-hdr">
+        <span>Shot chart</span>
+        <span class="mini-shot-count">${countLabel}</span>
+      </div>
+      <div class="mini-shot-grid">
+        <div class="mini-field-wrap">${fieldDots}</div>
+        <div class="mini-net-wrap">${netDots}</div>
+      </div>
+    </div>
+  `;
+}
+
+function jumpToGalleryWith(jersey,isGoalie){
+  if(isGoalie){sgView='goalieNet';}
+  else{sgView='offField';}
+  // Set player filter to this jersey after controls re-populate
+  switchTab('gallery');
+  setTimeout(()=>{
+    document.getElementById('sgPlayer').value=String(jersey);
+    renderGallery();
+  },100);
 }
 
 function toggleGlossary(){
